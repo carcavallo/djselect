@@ -4,12 +4,8 @@ namespace controller;
 
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
-use Monolog\Level;
 use Monolog\Logger;
 use PDOException;
-use Psr\Log\LogLevel;
-use UnexpectedValueException;
-use function util\replace;
 
 class IOController
 {
@@ -17,100 +13,76 @@ class IOController
 
     public function __construct()
     {
+        $this->setupExceptionHandler();
+        $this->initializeLogger();
+    }
+
+    private function setupExceptionHandler(): void
+    {
         set_exception_handler(function ($error) {
             if ($error instanceof PDOException) {
-                $this->writeLog($error->getMessage(), null, 500);
-                $this->sendResponse("error", $error->getMessage(), null, 500);
+                $this->writeLog($error->getMessage(), 500);
+                $this->sendResponse("error", $error->getMessage(), 500);
             }
         });
+    }
 
-        $timestamp = time();
-        $monthName = date("F", $timestamp);
-        $logFile = __DIR__ . "/../logs/" . strtolower($monthName) . ".log";
-
-        $formatter = new LineFormatter("%datetime% %channel%.%level_name%: %message%" . PHP_EOL);
-        $handler = new StreamHandler($logFile, LogLevel::INFO);
+    private function initializeLogger(): void
+    {
+        $logFile = $this->getLogFilePath();
+        $formatter = new LineFormatter("%datetime% %channel%.%level_name%: %message%\n");
+        $handler = new StreamHandler($logFile, Logger::DEBUG);
         $handler->setFormatter($formatter);
 
-        $this->logger = new Logger(get_called_class());
+        $this->logger = new Logger(get_class($this));
         $this->logger->pushHandler($handler);
+    }
+
+    private function getLogFilePath(): string
+    {
+        $timestamp = time();
+        $monthName = date("F", $timestamp);
+        return __DIR__ . "/../logs/" . strtolower($monthName) . ".log";
     }
 
     protected function checkPostArguments(array $args): void
     {
-        $error = false;
-        $arguments = array();
-        foreach ($args as $arg) {
-            if (
-                !array_key_exists($arg, $_POST) ||
-                $_POST[$arg] === null ||
-                $_POST[$arg] === ""
-            ) {
-                $error = true;
-                $arguments[] = $arg;
-            } elseif (is_string($_POST[$arg])) {
-                $_POST[$arg] = htmlspecialchars(addslashes($_POST[$arg]));
+        $missingArgs = array_filter($args, function($arg) {
+            return empty($_POST[$arg]) && !is_numeric($_POST[$arg]);
+        });
+
+        if (!empty($missingArgs)) {
+            $this->sendResponse("error", "Required fields are missing.", 400, ["missing" => $missingArgs]);
+        }
+
+        array_walk($_POST, function(&$value) {
+            if (is_string($value)) {
+                $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
             }
-        }
-
-        if ($error) {
-            $this->sendResponse("error", "Sie haben nicht alle Felder ausgefüllt", array("arguments" => $arguments), 400);
-        }
+        });
     }
 
-    private function getLevel(int $code): Level
+    public function sendResponse(string $status, string $message = "", int $code = 200, array $data = []): void
     {
-        if ($code >= 200 && $code < 300) {
-            return Level::Info;
-        } elseif ($code >= 400 && $code < 500) {
-            return Level::Warning;
-        } elseif ($code >= 500 && $code < 600) {
-            return Level::Error;
-        }
-
-        return Level::Critical;
-    }
-
-    public function sendResponse(string $status, string $message = "", array|object $data = null, int $code = 200, ?array $context = []): void
-    {
-        $response = array(
-            "status" => $status
-        );
-
-        if (!empty($data)) {
-            $response["data"] = $data;
-        }
-
-        if (strlen($message)) {
-            if (isset($_SESSION["username"])) $this->writeLog($message, $context, $code);
-
-            $message = replace($message, $context);
-            $response["message"] = $message;
-        }
-
         http_response_code($code);
-        echo json_encode($response);
+        header('Content-Type: application/json');
+        echo json_encode([
+            "status" => $status,
+            "message" => $message,
+            "data" => $data
+        ]);
         exit();
     }
 
-    public function writeLog(string $message, ?array $context = [], int $code = 200): void
+    public function writeLog(string $message, int $code = 200): void
     {
-        $message = replace($message, $context);
-
-        if (isset($_SESSION["username"])) {
-            $message = "Benutzer: " . $_SESSION["username"] . " - " . $message;
-        }
-
-        try {
-            $this->logger->addRecord($this->getLevel($code), $message);
-        } catch (UnexpectedValueException) {
-        }
+        $level = $this->logger::toMonologLevel($code);
+        $context = ['user' => $_SESSION['username'] ?? 'anonymous'];
+        $this->logger->log($level, $message, $context);
     }
 
-    public function show404(): void
+    public function show404(): void 
     {
-        header("Refresh: 3");
-
-        $this->sendResponse("error", "Ich glaube Sie haben sich verlaufen", null, 404);
+        $this->sendResponse("error", "The requested resource was not found.", 404);
     }
 }
