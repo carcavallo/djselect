@@ -24,9 +24,4 @@ class User implements JsonSerializable {
     public string $role;
     #[db_column]
     public string $created_at;
-
-    // Implement JsonSerializable as needed
-    public function jsonSerialize() {
-        return get_object_vars($this);
-    }
 }

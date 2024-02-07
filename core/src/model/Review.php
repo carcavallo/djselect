@@ -2,10 +2,11 @@
 
 namespace model;
 
+use JsonSerializable;
 use lib\DataRepo\trait\model;
 use lib\DataRepo\feature\db_column;
 
-class Review {
+class Review implements JsonSerializable {
     use model;
 
     public const TABLE_NAME = 'reviews';
