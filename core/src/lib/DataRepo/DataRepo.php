@@ -455,6 +455,11 @@ class DataRepo
 	{
 		try {
 			if (isset(self::$callback) && is_callable(self::$callback)) (self::$callback)();
+
+            if (!getenv("MYSQL_HOST") || !getenv("MYSQL_DB_NAME") || !getenv("MYSQL_USER") || !getenv("MYSQL_PW")) {
+                throw new PDOException("Missing environment variables for MySQL connection");
+            }
+
 			return new PDO(
 				"mysql:host=" . getenv("MYSQL_HOST") . ";dbname=" . getenv("MYSQL_DB_NAME") . ";charset=utf8",
 				getenv("MYSQL_USER"),
@@ -465,7 +470,7 @@ class DataRepo
 					PDO::ATTR_EMULATE_PREPARES => true,
 				]
 			);
-		} catch (Exception $e) {
+		} catch (PDOException $e) {
 			if (isset(self::$callbackError) && is_callable(self::$callbackError)) (self::$callbackError)($e);
 		}
 		return null;
