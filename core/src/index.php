@@ -14,12 +14,13 @@ date_default_timezone_set("Europe/Zurich");
 
 require_once __DIR__ . "/autoload.php";
 require_once __DIR__ . "/vendor/autoload.php";
+require_once __DIR__ . "/util/utils.php";
 
 use Bramus\Router\Router;
 use controller\IOController;
 
 set_exception_handler(function (Throwable $error) {
-    (new IOController)->writeLog($error->getMessage(), null, 500);
+    (new IOController)->writeLog($error->getMessage(), 500);
 });
 
 $router = new Router();
