@@ -24,13 +24,13 @@ class AuthController extends IOController
         );
 
         if (!empty($existingUser)) {
-            $this->sendResponse("error", "Username already exists", null, 409);
+            $this->sendResponse("error", "Username already exists", 409);
             return;
         }
 
         $user = User::fromArray($_POST);
         if (!DataRepo::insert($user)) {
-            $this->sendResponse("error", "An error occurred during registration", null, 500);
+            $this->sendResponse("error", "An error occurred during registration", 500);
             return;
         }
 
