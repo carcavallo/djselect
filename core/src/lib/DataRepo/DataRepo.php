@@ -456,14 +456,10 @@ class DataRepo
 		try {
 			if (isset(self::$callback) && is_callable(self::$callback)) (self::$callback)();
 
-            if (!getenv("MYSQL_HOST") || !getenv("MYSQL_DB_NAME") || !getenv("MYSQL_USER") || !getenv("MYSQL_PW")) {
-                throw new PDOException("Missing environment variables for MySQL connection");
-            }
-
 			return new PDO(
-				"mysql:host=" . getenv("MYSQL_HOST") . ";dbname=" . getenv("MYSQL_DB_NAME") . ";charset=utf8",
-				getenv("MYSQL_USER"),
-				getenv("MYSQL_PW"),
+				"mysql:host=127.0.0.1;dbname=djselect;charset=utf8",
+				"root",
+				"toor",
 				[
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 					PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

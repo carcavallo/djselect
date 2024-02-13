@@ -40,26 +40,3 @@ function removeArrayValues(array $array, array $value): array
 
     return array_values($array);
 }
-
-function array_walk_keys(array &$array, callable $callback): void
-{
-    foreach ($array as $key => $value) {
-        $new_key = $callback($key);
-        if ($new_key !== $key) {
-            unset($array[$key]);
-            $array[$new_key] = $value;
-        }
-    }
-}
-
-function replace(string $message, array|null $context = []): string
-{
-    if (!empty($context)) {
-        array_walk_keys($context, function ($key) {
-            return "{" . $key . "}";
-        });
-        $message = strtr($message, $context);
-    }
-
-    return $message;
-}

@@ -27,7 +27,7 @@ set_exception_handler(function (Throwable $error) {
 });
 
 DataRepo::$callbackError = function () {
-    (new IOController)->sendResponse("error", "Datenbank Server nicht erreichbar", 503);
+    (new IOController)->sendResponse("error", "Database server not accessible", 503);
 };
 
 $router = new Router();
