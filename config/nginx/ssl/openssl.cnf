@@ -1,0 +1,29 @@
+[ req ]
+default_bits = 2048
+prompt = no
+default_md = sha256
+distinguished_name = dn
+req_extensions = req_ext
+
+[dn]
+C = CH
+ST = Zurich
+L = Zurich
+O = tunnl
+OU = tunnl
+emailAddress = abuse@tunnl.me
+CN = localhost
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = localhost
+DNS.2 = tunnl.me
+DNS.3 = *.tunnl.me
+IP.1 = 10.13.37.2
+IP.2 = 10.13.37.3
+IP.3 = 10.13.37.4
+
+[ v3_ca ]
+subjectAltName = @alt_names

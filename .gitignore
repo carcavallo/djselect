@@ -5,6 +5,7 @@
 logs/
 sessions/
 data/
+requests
 
 # Composer
 vendor/
