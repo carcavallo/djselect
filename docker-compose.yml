@@ -34,9 +34,9 @@ services:
     #restart: always
     image: "mariadb:10.11.6-jammy"
     environment:
-      MYSQL_ROOT_PASSWORD: "toor"
-      MYSQL_USER: "root"
-      MYSQL_PASSWORD: "toor"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PW}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PW}"
     networks:
       intern:
         ipv4_address: 10.0.2.4
