@@ -29,13 +29,13 @@ class AuthController extends IOController
         );
 
         if (!empty($existingUser)) {
-            $this->sendResponse("error", "Username already exists", null, 409);
+            $this->sendResponse("error", "Username already exists", 409);
             return;
         }
 
         $user = User::fromArray($_POST);
         if (!DataRepo::insert($user)) {
-            $this->sendResponse("error", "An error occurred during registration", null, 500);
+            $this->sendResponse("error", "An error occurred during registration", 500);
             return;
         }
 
@@ -57,8 +57,8 @@ class AuthController extends IOController
         );
 
         if (empty($user) || $user[0]->password != $_POST["password"]) {
-            $this->writeLog("Login failed for the user {username} - Login data", ["username" => $_POST["username"]], 401);
-            $this->sendResponse("error", "Username or password incorrect", null, 401);
+            $this->writeLog("Login failed for the user {username} - Login data", 401);
+            $this->sendResponse("error", "Username or password incorrect", 401);
         }
 
         $user[0]->last_login = time();
@@ -75,7 +75,7 @@ class AuthController extends IOController
         session_unset();
 
         if ($respond) {
-            $this->sendResponse("success", "Erfolgreich abgemeldet");
+            $this->sendResponse("success", "Successfully logged out");
         }
     }
 
@@ -83,7 +83,7 @@ class AuthController extends IOController
     {
         if (empty($_SESSION["user_id"])) {
             $this->logout(false);
-            $this->sendResponse("error", "Sie sind nicht angemeldet", null, 403);
+            $this->sendResponse("error", "You are not logged in", 403);
         }
     }
 }
