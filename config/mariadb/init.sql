@@ -1,18 +1,47 @@
 CREATE DATABASE IF NOT EXISTS djselect DEFAULT CHARACTER SET UTF8 DEFAULT COLLATE utf8_bin;
 USE djselect;
 
-DROP TABLE IF EXISTS reviews;
-DROP TABLE IF EXISTS bookings;
-DROP TABLE IF EXISTS events;
-DROP TABLE IF EXISTS profiles;
-DROP TABLE IF EXISTS users;
-
 CREATE TABLE users (
-    user_id UUID PRIMARY KEY DEFAULT UUID(),
+    user_id UUID PRIMARY KEY DEFAULT (UUID()),
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     role ENUM('event_manager', 'dj') NOT NULL,
-    last_login INTEGER DEFAULT NUll,
+    last_login INTEGER DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE profiles (
+    profile_id UUID PRIMARY KEY DEFAULT (UUID()),
+    user_id UUID NOT NULL,
+    bio TEXT,
+    profile_picture VARCHAR(255),
+    contact_info TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+) ENGINE=InnoDB;
+
+CREATE TABLE events (
+    event_id UUID PRIMARY KEY DEFAULT (UUID()),
+    organizer_id UUID NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    event_date DATE NOT NULL,
+    event_time TIME NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (organizer_id) REFERENCES users(user_id)
+) ENGINE=InnoDB;
+
+CREATE TABLE bookings (
+    booking_id UUID PRIMARY KEY DEFAULT (UUID()),
+    event_id UUID NOT NULL,
+    dj_id UUID NOT NULL,
+    status ENUM('pending', 'confirmed', 'cancelled') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (event_id) REFERENCES events(event_id),
+    FOREIGN KEY (dj_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;

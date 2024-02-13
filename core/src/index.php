@@ -65,4 +65,25 @@ $router->mount("/auth", function () use ($router) {
     $router->post("/logout", "AuthController@logout");
 });
 
+$router->mount('/profiles', function () use ($router) {
+    $router->post('/', 'ProfilesController@createProfile');
+    $router->get('/{profileId}', 'ProfilesController@getProfile');
+    $router->put('/{profileId}', 'ProfilesController@editProfile');
+    $router->delete('/{profileId}', 'ProfilesController@deleteProfile');
+});
+
+$router->mount('/events', function () use ($router) {
+    $router->post('/', 'EventsController@createEvent');
+    $router->get('/{eventId}', 'EventsController@getEvent');
+    $router->put('/{eventId}', 'EventsController@updateEvent');
+    $router->delete('/{eventId}', 'EventsController@deleteEvent');
+});
+
+$router->mount('/bookings', function () use ($router) {
+    $router->post('/', 'BookingsController@createBooking');
+    $router->get('/{bookingId}', 'BookingsController@getBooking');
+    $router->put('/{bookingId}', 'BookingsController@updateBooking');
+    $router->delete('/{bookingId}', 'BookingsController@deleteBooking');
+});
+
 $router->run();
