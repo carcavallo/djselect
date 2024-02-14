@@ -6,6 +6,7 @@ use Exception;
 use lib\DataRepo\DataRepo;
 use trait\getter;
 use model\User;
+use PHPMailer\PHPMailer\PHPMailer;
 use function util\removeArrayKeys;
 use function util\removeArrayValues;
 
@@ -32,18 +33,19 @@ class AuthController extends IOController
             ]
         );
 
-        if (empty($user) || $user[0]->password != $_POST["password"]) {
+        if (empty($user) || !password_verify($_POST["password"], $user[0]->password)) {
             $this->writeLog("Login failed for the user {username} - Login data", ["username" => $_POST["username"]], 401);
             $this->sendResponse("error", "Username or password incorrect", null, 401);
+        } else {
+            $user[0]->last_login = time();
+
+            DataRepo::update($user[0]);
+    
+            $_SESSION['user'] = $user[0]->toArray();
+            unset($_SESSION['password']);
+    
+            $this->sendResponse("success", "Successfully logged in");
         }
-
-        $user[0]->last_login = time();
-
-        DataRepo::update($user[0]);
-        
-        $_SESSION['user'] = $user[0]->toArray();
-
-        $this->sendResponse("success", "Successfully logged in");
     }
 
     /**
@@ -57,7 +59,7 @@ class AuthController extends IOController
     {
         $arguments = removeArrayValues(User::getDbFields(), ["user_id", "role", "last_login", "created_at"]);
         $this->checkPostArguments($arguments);
-    
+
         $_POST["username"] = strtolower($_POST["username"]);
         $_POST["email"] = strtolower($_POST["email"]);
     
@@ -83,6 +85,8 @@ class AuthController extends IOController
             return;
         }
     
+        $_POST["password"] = password_hash($_POST["password"], PASSWORD_DEFAULT);
+
         $user = User::fromArray($_POST);
         if (!DataRepo::insert($user)) {
             $this->sendResponse("error", "An error occurred during registration", null, 500);
@@ -90,9 +94,10 @@ class AuthController extends IOController
         }
     
         $_SESSION = $user->toArray();
-    
+        unset($_SESSION['password']);
+
         $this->sendResponse("success", "Registration successful", removeArrayKeys($_SESSION, ["user_id", "password"]));
-    }    
+    }  
     
     /**
      * Ends the current session and returns a success message if $respond is set to true.
@@ -118,6 +123,54 @@ class AuthController extends IOController
         if (empty($_SESSION["user_id"])) {
             $this->logout(false);
             $this->sendResponse("error", "You are not logged in", 403);
+        }
+    }
+
+    public function requestPasswordReset(): void
+    {
+        $this->checkPostArguments(["email"]);
+        $email = strtolower($_POST["email"]);
+    
+        $user = DataRepo::of(User::class)->select(
+            where: ["email" => ["=" => $email]]
+        );
+    
+        if (!empty($user)) {
+            $user = $user[0];
+            $token = bin2hex(random_bytes(16));
+            $expires = new \DateTime('now +1 hour');
+    
+            $user->reset_token = $token;
+            $user->reset_token_expires = $expires->format('Y-m-d H:i:s');
+            DataRepo::update($user);
+    
+            $mail = new PHPMailer(true);
+
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host = $_ENV['EMAIL_HOST'];
+                $mail->SMTPAuth = true;
+                $mail->Username = $_ENV['EMAIL_USERNAME'];
+                $mail->Password = $_ENV['EMAIL_PASSWORD'];
+                $mail->SMTPSecure = 'tls';
+                $mail->Port = 587;
+                $mail->CharSet = 'UTF-8';
+    
+                $mail->setFrom('djselect@alessio.fm', 'DJSELECT');
+                $mail->addAddress($email);
+    
+                $mail->isHTML(true);
+                $mail->Subject = 'Password Reset Request';
+                $mail->Body    = 'Please click on the following link to reset your password: <a href="http://localhost/reset_password.php?token=' . $token . '">Reset Password</a>';
+    
+                $mail->send();
+                $this->sendResponse("success", "If the email is registered, you will receive a password reset link.");
+            } catch (Exception $e) {
+                $this->sendResponse("error", "Mailer Error: " . $mail->ErrorInfo, null, 500);
+            }
+        } else {
+            $this->sendResponse("success", "If the email is registered, you will receive a password reset link.");
         }
     }
 }
