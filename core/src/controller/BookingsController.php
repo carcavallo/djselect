@@ -74,17 +74,21 @@ class BookingsController extends IOController
             return;
         }
     
-        $updateFields = $_POST;
-        unset($updateFields['booking_id'], $updateFields['created_at'], $updateFields['updated_at']);
+        $booking = $booking[0];
     
-        if (DataRepo::update($booking[0], $updateFields)) {
-            $this->sendResponse("success", "Booking updated successfully");
-        } else {
+        foreach ($_POST as $key => $value) {
+            if (property_exists($booking, $key) && !in_array($key, ['booking_id', 'created_at', 'updated_at'])) {
+                $booking->$key = $value;
+            }
+        }
+    
+        if (!DataRepo::update($booking)) {
             $this->sendResponse("error", "Failed to update booking", null, 500);
+        } else {
+            $this->sendResponse("success", "Booking updated successfully");
         }
     }
     
-
     /**
      * Deletes a booking based on the provided booking ID.
      * @param string $bookingId The booking ID to delete.

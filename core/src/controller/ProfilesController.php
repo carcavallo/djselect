@@ -73,16 +73,22 @@ class ProfilesController extends IOController
             $this->sendResponse("error", "Profile not found", null, 404);
             return;
         }
-
-        $updateFields = $_POST;
-        unset($updateFields['profile_id'], $updateFields['user_id'], $updateFields['created_at'], $updateFields['updated_at']);
-
-        if (DataRepo::update($profile[0], $updateFields)) {
-            $this->sendResponse("success", "Profile updated successfully");
-        } else {
+    
+        $profile = $profile[0];
+    
+        foreach ($_POST as $key => $value) {
+            if (property_exists($profile, $key) && !in_array($key, ['profile_id', 'user_id', 'created_at', 'updated_at'])) {
+                $profile->$key = $value;
+            }
+        }
+    
+        if (!DataRepo::update($profile)) {
             $this->sendResponse("error", "Failed to update profile", null, 500);
+        } else {
+            $this->sendResponse("success", "Profile updated successfully");
         }
     }
+    
 
     /**
      * Deletes a profile based on the provided profile ID.

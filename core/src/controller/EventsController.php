@@ -66,25 +66,29 @@ class EventsController extends IOController
     public function updateEvent(string $eventId): void
     {
         $event = DataRepo::of(Event::class)->select(
-            where: [
-                "event_id" => ["=" => $eventId],
-            ]
+            where: ["event_id" => ["=" => $eventId]]
         );
-
+    
         if (empty($event)) {
             $this->sendResponse("error", "Event not found", null, 404);
             return;
         }
-
-        $updateFields = $_POST;
-        unset($updateFields['event_id'], $updateFields['created_at'], $updateFields['updated_at']);
-
-        if (DataRepo::update($event[0], $updateFields)) {
-            $this->sendResponse("success", "Event updated successfully");
-        } else {
+    
+        $event = $event[0];
+    
+        foreach ($_POST as $key => $value) {
+            if (property_exists($event, $key) && !in_array($key, ['event_id', 'created_at', 'updated_at'])) {
+                $event->$key = $value;
+            }
+        }
+    
+        if (!DataRepo::update($event)) {
             $this->sendResponse("error", "Failed to update event", null, 500);
+        } else {
+            $this->sendResponse("success", "Event updated successfully");
         }
     }
+    
 
     /**
      * Deletes an event based on the provided event ID.
