@@ -4,9 +4,11 @@ import Authorization from './components/Authorization';
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Authorization />} />
-      </Routes>
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <Routes>
+          <Route path="/" element={<Authorization />} />
+        </Routes>
+      </div>
     </Router>
   );
 }
