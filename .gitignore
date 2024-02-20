@@ -32,3 +32,6 @@ package-lock.json
 # System files
 .DS_Store
 Thumbs.db
+
+# Certs
+config/apache/ssl
