@@ -4,7 +4,6 @@ namespace controller;
 
 use Exception;
 use lib\DataRepo\DataRepo;
-use trait\getter;
 use model\User;
 use PHPMailer\PHPMailer\PHPMailer;
 use function util\removeArrayKeys;
@@ -12,8 +11,6 @@ use function util\removeArrayValues;
 
 class AuthController extends IOController
 {
-    use getter;
-
     /**
      * Checks the user's credentials to start a session.
      * If the credentials are valid, a session is started and a success message is returned.

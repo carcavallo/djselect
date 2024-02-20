@@ -33,7 +33,7 @@ if (!empty($request_body)) {
 }
 
 header("Content-Type: application/json");
-header('Access-Control-Allow-Origin: http://localhost:3000');
+header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
@@ -60,15 +60,18 @@ DataRepo::$callbackError = function () {
     (new IOController)->sendResponse("error", "Database server not accessible", 503);
 };
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 $router = new Router();
 $router->setNamespace("controller");
 $router->setBasePath("/api");
 
 $router->set404("IOController@show404");
 
-$router->before("GET|POST|PUT|DELETE", "/profiles*", "AuthController@checkLogin");
-$router->before("GET|POST|PUT|DELETE", "/events*", "AuthController@checkLogin");
-$router->before("GET|POST|PUT|DELETE", "/bookings*", "AuthController@checkLogin");
+$router->before("GET|POST|PUT|DELETE", "/users/.*", "AuthController@checkLogin");
+$router->before("GET|POST|PUT|DELETE", "/events/.*", "AuthController@checkLogin");
+$router->before("GET|POST|PUT|DELETE", "/bookings/.*", "AuthController@checkLogin");
 
 
 $router->mount("/auth", function () use ($router) {
