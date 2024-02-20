@@ -75,7 +75,6 @@ class EventsController extends IOController
         }
     
         $event = $event[0];
-    
         foreach ($_POST as $key => $value) {
             if (property_exists($event, $key) && !in_array($key, ['event_id', 'created_at', 'updated_at'])) {
                 $event->$key = $value;

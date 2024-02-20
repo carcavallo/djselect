@@ -13,17 +13,6 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
-CREATE TABLE profiles (
-    profile_id UUID PRIMARY KEY DEFAULT (UUID()),
-    user_id UUID NOT NULL,
-    bio TEXT,
-    profile_picture VARCHAR(255),
-    contact_info TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
-) ENGINE=InnoDB;
-
 CREATE TABLE events (
     event_id UUID PRIMARY KEY DEFAULT (UUID()),
     organizer_id UUID NOT NULL,

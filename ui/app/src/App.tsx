@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Authorization from './components/Authorization';
+import Dashboard from './components/Dashboard';
 
 function App() {
   return (
@@ -7,6 +8,7 @@ function App() {
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
         <Routes>
           <Route path="/" element={<Authorization />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </Router>

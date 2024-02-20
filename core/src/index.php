@@ -34,6 +34,7 @@ if (!empty($request_body)) {
 
 header("Content-Type: application/json");
 header('Access-Control-Allow-Origin: http://localhost:3000');
+header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 
@@ -77,11 +78,11 @@ $router->mount("/auth", function () use ($router) {
     $router->post("/reset", "AuthController@requestPasswordReset");
 });
 
-$router->mount('/profiles', function () use ($router) {
-    $router->post('/', 'ProfilesController@createProfile');
-    $router->get('/{profileId}', 'ProfilesController@getProfile');
-    $router->put('/{profileId}', 'ProfilesController@editProfile');
-    $router->delete('/{profileId}', 'ProfilesController@deleteProfile');
+$router->mount('/users', function () use ($router) {
+    $router->get('/', 'UsersController@getUsers');
+    $router->get('/{userId}', 'UsersController@getUser');
+    $router->put('/{userId}', 'UsersController@updateUser');
+    $router->delete('/{userId}', 'UsersController@deleteUser');
 });
 
 $router->mount('/events', function () use ($router) {

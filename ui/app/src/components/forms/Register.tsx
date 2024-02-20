@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface RegisterProps {
   onToggle: () => void;
 }
 
 const Register: React.FC<RegisterProps> = ({ onToggle }) => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -18,10 +20,11 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
       const response = await fetch('http://localhost/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ username, password, email, role }),
       });
       if (response.ok) {
-        alert('Registration successful');
+        navigate('/dashboard');
       } else {
         const data = await response.json();
         setErrorMessage(data.message || 'Failed to register');
