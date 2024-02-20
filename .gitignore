@@ -34,4 +34,5 @@ package-lock.json
 Thumbs.db
 
 # Certs
-config/apache/ssl
+*.crt
+*.key
