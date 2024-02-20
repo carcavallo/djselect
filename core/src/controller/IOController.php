@@ -135,7 +135,7 @@ class IOController
         $message = replace($message, $context);
 
         if (isset($_SESSION["username"])) {
-            $message = "Benutzer: " . $_SESSION["username"] . " - " . $message;
+            $message = "User: " . $_SESSION["username"] . " - " . $message;
         }
 
         try {
