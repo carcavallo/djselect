@@ -17,7 +17,7 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
     e.preventDefault();
     setErrorMessage('');
     try {
-      const response = await fetch('http://localhost/api/auth/register', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

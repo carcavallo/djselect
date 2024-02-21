@@ -1,14 +1,13 @@
 version: "3.8"
 
 services:
-  app:
+  core:
     build:
       context: .
       dockerfile: ./config/php/Dockerfile
     ports:
       - "8080:80"
       - "8443:443"
-
     volumes:
       - ./core/src:/var/www/html
     depends_on:
@@ -23,3 +22,17 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - ./config/mariadb/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  ui:
+    build:
+      context: .
+      dockerfile: ./config/react/Dockerfile
+      args:
+        - REACT_APP_API_URL=http://localhost:8080
+    ports:
+      - "3000:80"
+    volumes:
+      - ./ui/app:/app
+      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080
