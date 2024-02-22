@@ -49,6 +49,24 @@ class UsersController extends IOController
     }
 
     /**
+     * Retrieves session data for the current logged-in user.
+     * Note: This function assumes the user's ID is stored in the session upon login.
+     * @return array|null The session data for the current user or null if not logged in.
+     */
+    public function getUserSession()
+    {
+        if (isset($_SESSION['user_id'])) {
+            $sessionData = [
+                'user_id' => $_SESSION['user_id'],
+            ];
+
+            $this->sendResponse("success", "User Session retrieved successfully", $sessionData);
+        }
+
+        $this->sendResponse("error", "Failed to retrieved User session", $sessionData);
+    }
+
+    /**
      * Updates an existing user with the details provided in the request body.
      * @param string $userId The unique identifier of the user to be updated.
      * @return void

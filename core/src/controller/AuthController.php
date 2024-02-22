@@ -93,7 +93,7 @@ class AuthController extends IOController
         $_SESSION = $user->toArray();
         unset($_SESSION['password']);
 
-        $this->sendResponse("success", "Registration successful", removeArrayKeys($_SESSION, ["user_id", "password"]));
+        $this->sendResponse("success", "Registration successful", removeArrayKeys($_SESSION, ["password"]));
     }  
     
     /**

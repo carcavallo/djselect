@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Admin: React.FC = () => {
+const Administrator: React.FC = () => {
   return (
     <div>
       <h1>Administrator Dashboard</h1>
@@ -10,4 +10,4 @@ const Admin: React.FC = () => {
   );
 };
 
-export default Admin;
+export default Administrator;
