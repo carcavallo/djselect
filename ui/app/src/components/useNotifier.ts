@@ -15,5 +15,5 @@ export function useNotifier() {
     toast.success(successMessage);
   };
 
-  return { error, success, notifyError, notifySuccess };
+  return { error, setError, success, setSuccess, notifyError, notifySuccess };
 }

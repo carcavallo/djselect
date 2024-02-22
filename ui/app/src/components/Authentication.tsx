@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Login from './forms/Login';
 import Register from './forms/Register';
+
 
 const Authentication: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);

@@ -17,7 +17,7 @@ interface SessionData {
 export const useUserRole = () => {
   const navigate = useNavigate();
   const [role, setRole] = useState<UserRole>(null);
-  const {error, notifyError} = useNotifier();
+  const {error, setError, notifyError} = useNotifier();
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -32,18 +32,7 @@ export const useUserRole = () => {
 
         const sessionData = await sessionResponse.json() as SessionData;
         if (sessionData.status === 'error') {
-          notifyError(sessionData.message || 'Session error');
-          setTimeout(() => {
-            navigate('/');
-          }, 2000);
-          return;
-        }
-
-        if (!sessionData.data?.user_id) {
-          notifyError('Session expired');
-          setTimeout(() => {
-            navigate('/');
-          }, 2000);
+          setError('Your session has ended due to inactivity.');
           return;
         }
 
@@ -57,18 +46,18 @@ export const useUserRole = () => {
 
         const userDetailsData = await userDetailsResponse.json() as SessionData;
         if (userDetailsData.status === 'error') {
-          notifyError(userDetailsData.message || 'Failed to fetch user details');
+          setError(userDetailsData.message || 'Failed to fetch user details');
           return;
         }
 
         setRole(userDetailsData.data?.role || null);
       } catch (error: any) {
-        notifyError(error.message || 'An error occurred during user role fetch');
+        setError(error.message || 'An error occurred during user role fetch');
       }
     };
 
     fetchUserRole();
-  }, [navigate, notifyError]);
+  }, [navigate, notifyError, notifyError]);
 
-  return { role, error };
+  return { role, error, notifyError };
 };

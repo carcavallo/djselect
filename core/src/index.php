@@ -73,7 +73,6 @@ $router->set404("IOController@show404");
 //$router->before("GET|POST|PUT|DELETE", "/events/.*", "AuthController@checkLogin");
 //$router->before("GET|POST|PUT|DELETE", "/bookings/.*", "AuthController@checkLogin");
 
-
 $router->mount("/auth", function () use ($router) {
     $router->post("/login", "AuthController@login");
     $router->post("/register", "AuthController@register");

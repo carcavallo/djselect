@@ -7,14 +7,15 @@ import { useUserRole } from './useUserRole';
 
 
 const Dashboard: React.FC = () => {
-  const { role, error } = useUserRole();
+  const { role, error, notifyError } = useUserRole();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (error) {
-        navigate('/');
+      notifyError(error);
+      navigate('/');
     }
-  }, [error, navigate]);
+  }, [error, navigate, notifyError]);
 
   switch (role) {
     case 'event_manager':
