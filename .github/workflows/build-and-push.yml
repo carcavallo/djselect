@@ -23,6 +23,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Debug step: List the contents of the config/nginx directory to ensure default.conf is present
+      - name: List Nginx config directory
+        run: ls -lah ./config/nginx/
+
       - name: Build and push frontend image
         uses: docker/build-push-action@v2
         with:
