@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Authorization from './components/Authorization';
+import Authentication from './components/Authentication';
 import Dashboard from './components/Dashboard';
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
     <Router>
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
         <Routes>
-          <Route path="/" element={<Authorization />} />
+          <Route path="/" element={<Authentication />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>

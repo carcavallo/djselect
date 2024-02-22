@@ -63,7 +63,7 @@ class UsersController extends IOController
             $this->sendResponse("success", "User Session retrieved successfully", $sessionData);
         }
 
-        $this->sendResponse("error", "Failed to retrieved User session", $sessionData);
+        $this->sendResponse("error", "Failed to retrieved User session");
     }
 
     /**
