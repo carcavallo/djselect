@@ -5,15 +5,16 @@ import DJ from './roles/DJ';
 import Administrator from './roles/Administrator';
 import { useUserRole } from './useUserRole';
 
+
 const Dashboard: React.FC = () => {
-  const { role, errorMessage } = useUserRole();
+  const { role, error } = useUserRole();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (errorMessage === 'User ID not found in session' || errorMessage === 'Session error') {
+    if (error) {
         navigate('/');
     }
-  }, [errorMessage, navigate]);
+  }, [error, navigate]);
 
   switch (role) {
     case 'event_manager':

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useNotifier } from '../useNotifier';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface LoginProps {
   onToggle: () => void;
@@ -9,11 +11,10 @@ const Login: React.FC<LoginProps> = ({ onToggle }) => {
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const {error, notifyError, notifySuccess} = useNotifier();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setErrorMessage('');
     try {
       const response = await fetch('http://localhost:80/api/auth/login', {
         method: 'POST',
@@ -22,20 +23,23 @@ const Login: React.FC<LoginProps> = ({ onToggle }) => {
         body: JSON.stringify({ username, password }),
       });
       if (response.ok) {
-        navigate('/dashboard');
+        notifySuccess('Logged in successfully');
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2000);
       } else {
         const data = await response.json();
-        setErrorMessage(data.message || 'Failed to login');
+        notifyError(data.message || 'Failed to login');
       }
     } catch (error: any) {
-      setErrorMessage(error.message || 'An error occurred during login');
+      notifyError(error.message || 'An error occurred during login');
     }
   };
 
   return (
     <div className="max-w-md w-full space-y-8">
       <div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">Sign in to your account</h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Or{' '}
           <button onClick={onToggle} className="font-medium text-indigo-600 hover:text-indigo-500">
@@ -72,7 +76,7 @@ const Login: React.FC<LoginProps> = ({ onToggle }) => {
             />
           </div>
         </div>
-        {errorMessage && <div className="text-sm text-red-600">{errorMessage}</div>}
+        {error && <div className="text-sm text-red-600">{error}</div>}
         <div>
           <button
             type="submit"

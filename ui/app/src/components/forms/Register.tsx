@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useNotifier } from '../useNotifier';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface RegisterProps {
   onToggle: () => void;
@@ -11,11 +13,10 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
   const [password, setPassword] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [role, setRole] = useState<string>('dj');
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const { error, notifyError, notifySuccess } = useNotifier();
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setErrorMessage('');
     try {
       const response = await fetch('http://localhost:80/api/auth/register', {
         method: 'POST',
@@ -24,13 +25,16 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
         body: JSON.stringify({ username, password, email, role }),
       });
       if (response.ok) {
-        navigate('/dashboard');
+        notifySuccess('Registered successfully');
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2000);
       } else {
         const data = await response.json();
-        setErrorMessage(data.message || 'Failed to register');
+        notifyError(data.message || 'Failed to register');
       }
     } catch (error: any) {
-      setErrorMessage(error.message || 'An error occurred during registration');
+      notifyError(error.message || 'An error occurred during registration');
     }
   };
 
@@ -100,7 +104,7 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
             </select>
           </div>
         </div>
-        {errorMessage && <div className="text-sm text-red-600">{errorMessage}</div>}
+        {error && <div className="text-sm text-red-600">{error}</div>}
         <div>
           <button
             type="submit"

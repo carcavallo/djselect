@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useNotifier } from './useNotifier';
+import 'react-toastify/dist/ReactToastify.css';
 
 type UserRole = 'event_manager' | 'dj' | 'administrator' | null;
 
@@ -15,7 +17,7 @@ interface SessionData {
 export const useUserRole = () => {
   const navigate = useNavigate();
   const [role, setRole] = useState<UserRole>(null);
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const {error, notifyError} = useNotifier();
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -30,14 +32,18 @@ export const useUserRole = () => {
 
         const sessionData = await sessionResponse.json() as SessionData;
         if (sessionData.status === 'error') {
-          navigate('/');
-          setErrorMessage(sessionData.message || 'Session error');
+          notifyError(sessionData.message || 'Session error');
+          setTimeout(() => {
+            navigate('/');
+          }, 2000);
           return;
         }
 
         if (!sessionData.data?.user_id) {
-          navigate('/');
-          setErrorMessage('User ID not found in session');
+          notifyError('Session expired');
+          setTimeout(() => {
+            navigate('/');
+          }, 2000);
           return;
         }
 
@@ -51,18 +57,18 @@ export const useUserRole = () => {
 
         const userDetailsData = await userDetailsResponse.json() as SessionData;
         if (userDetailsData.status === 'error') {
-          setErrorMessage(userDetailsData.message || 'Failed to fetch user details');
+          notifyError(userDetailsData.message || 'Failed to fetch user details');
           return;
         }
 
         setRole(userDetailsData.data?.role || null);
       } catch (error: any) {
-        setErrorMessage(error.message || 'An error occurred during user role fetch');
+        notifyError(error.message || 'An error occurred during user role fetch');
       }
     };
 
     fetchUserRole();
-  }, [navigate]);
+  }, [navigate, notifyError]);
 
-  return { role, errorMessage };
+  return { role, error };
 };
