@@ -9,7 +9,7 @@ interface SessionData {
   data?: {
     user_id: string;
     role?: UserRole;
-  };
+  }; 
 }
 
 export const useUserRole = () => {
