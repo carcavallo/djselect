@@ -4,7 +4,6 @@ import EventManager from './roles/EventManager';
 import DJ from './roles/DJ';
 import Administrator from './roles/Administrator';
 import { useUserRole } from './useUserRole';
-import 'react-toastify/dist/ReactToastify.css';
 
 const Dashboard: React.FC = () => {
   const { role, errorMessage } = useUserRole();
