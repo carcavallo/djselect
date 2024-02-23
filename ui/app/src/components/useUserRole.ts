@@ -49,7 +49,7 @@ export const useUserRole = () => {
     };
 
     fetchUserRole();
-  }, [navigate, notifyError, notifyError, setError]);
+  }, [navigate, notifyError, setError]);
 
   return { role, error, notifyError, notifySuccess };
 };

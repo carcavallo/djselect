@@ -22,7 +22,7 @@ const Login: React.FC<LoginProps> = ({ onToggle }) => {
         body: JSON.stringify({ username, password }),
       });
       if (response.ok) {
-        notifySuccess('Logged in successfully');
+        notifySuccess('Logged in successfully.');
         setTimeout(() => {
           navigate('/dashboard');
         }, 2000);
