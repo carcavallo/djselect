@@ -17,16 +17,13 @@ const Dashboard: React.FC = () => {
     }
   }, [error, navigate, notifyError]);
 
-  switch (role) {
-    case 'event_manager':
-      return <EventManager />;
-    case 'dj':
-      return <DJ />;
-    case 'administrator':
-      return <Administrator />;
-    default:
-      return <></>;
-  }
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center">
+      {role === 'event_manager' && <EventManager />}
+      {role === 'dj' && <DJ />}
+      {role === 'administrator' && <Administrator />}
+    </div>
+  );
 };
 
 export default Dashboard;

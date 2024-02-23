@@ -39,7 +39,7 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
   };
 
   return (
-    <div className="max-w-md w-full space-y-8">
+    <div className="max-w-md mx-auto w-full space-y-8 p-6 sm:p-8">
       <div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-white">Register your account</h2>
         <p className="mt-2 text-center text-sm text-gray-600">
@@ -58,7 +58,7 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
               type="text"
               autoComplete="username"
               required
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              className="appearance-none rounded-t-md relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm min-h-[50px]"
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -71,7 +71,7 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
               type="password"
               autoComplete="new-password"
               required
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm min-h-[50px]"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -84,7 +84,7 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
               type="email"
               autoComplete="email"
               required
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              className="appearance-none rounded-b-md relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm min-h-[50px]"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -95,7 +95,7 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
               id="role"
               name="role"
               required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              className="appearance-none rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm min-h-[50px]"
               value={role}
               onChange={(e) => setRole(e.target.value)}
             >
@@ -108,7 +108,7 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
         <div>
           <button
             type="submit"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Register
           </button>
