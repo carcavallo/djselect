@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotifier } from './useNotifier';
-import 'react-toastify/dist/ReactToastify.css';
 
 type UserRole = 'event_manager' | 'dj' | 'administrator' | null;
 
@@ -9,16 +8,23 @@ interface SessionData {
   status: 'error' | 'success';
   message?: string;
   data?: {
-    user_id: string;
-    role?: UserRole;
-  }; 
+    expires: number;
+    user: {
+      user_id: string;
+      username: string;
+      email: string;
+      role: UserRole;
+      last_login: number;
+      created_at: string;
+    };
+  };
 }
 
 export const useUserRole = () => {
   const navigate = useNavigate();
   const [role, setRole] = useState<UserRole>(null);
-  const {error, setError, notifyError, notifySuccess} = useNotifier();
-
+  const { notifyError } = useNotifier();
+  
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
@@ -26,30 +32,22 @@ export const useUserRole = () => {
           credentials: 'include',
         });
 
-        const sessionData = await sessionResponse.json() as SessionData;
+        const sessionData: SessionData = await sessionResponse.json();
         if (sessionData.status === 'error') {
-          setError('Your session has ended due to inactivity.');
-          return;
+          navigate('/');
+        } else if (sessionData.status === 'success' && sessionData.data?.user.role) {
+          setRole(sessionData.data.user.role);
+          navigate('/dashboard');
+        } else {
+          navigate('/');
         }
-
-        const userDetailsResponse = await fetch(`http://localhost:80/api/users/${sessionData.data?.user_id}`, {
-          credentials: 'include',
-        });
-
-        const userDetailsData = await userDetailsResponse.json() as SessionData;
-        if (userDetailsData.status === 'error') {
-          setError(userDetailsData.message || 'Failed to fetch user details');
-          return;
-        }
-
-        setRole(userDetailsData.data?.role || null);
       } catch (error: any) {
-        setError(error.message || 'An error occurred during user role fetch');
+        notifyError(error.message || 'An error occurred during user role fetch');
       }
     };
 
     fetchUserRole();
-  }, [navigate, notifyError, setError]);
+  }, [navigate, notifyError]);
 
-  return { role, error, notifyError, notifySuccess };
+  return { role, notifyError };
 };

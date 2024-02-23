@@ -6,6 +6,7 @@ use Exception;
 use lib\DataRepo\DataRepo;
 use model\User;
 use trait\getter;
+use function util\removeArrayKeys;
 
 class UsersController extends IOController
 {
@@ -55,16 +56,12 @@ class UsersController extends IOController
      */
     public function getUserSession()
     {
-        if (isset($_SESSION['user_id'])) {
-            $sessionData = [
-                'user_id' => $_SESSION['user_id'],
-            ];
-
-            $this->sendResponse("success", "User Session retrieved successfully", $sessionData);
+        if (isset($_SESSION['user']['user_id']) && $_SESSION['expires'] > time()) {
+            $this->sendResponse("success", "User Session retrieved successfully", removeArrayKeys($_SESSION, ['password']));
+        } else {
+            $this->sendResponse("error", "Session expired or not logged in", null, 401);
         }
-
-        $this->sendResponse("error", "Failed to retrieved User session");
-    }
+    }    
 
     /**
      * Updates an existing user with the details provided in the request body.

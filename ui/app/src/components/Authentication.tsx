@@ -6,22 +6,14 @@ import Register from './forms/Register';
 
 
 const Authentication: React.FC = () => {
-  const { role, notifySuccess } = useUserRole();
-  const navigate = useNavigate();
+  const { role } = useUserRole();
   const [isLogin, setIsLogin] = useState(true);
-
-  useEffect(() => {
-    if (role) {
-      notifySuccess('Already logged in.')
-      navigate('/dashboard');
-    }
-  }, [role, navigate, notifySuccess]);
 
   const toggleForm = () => setIsLogin(!isLogin);
 
   return (
     <>
-      {isLogin ? <Login onToggle={toggleForm} /> : <Register onToggle={toggleForm} />}
+      {role && isLogin ? <Login onToggle={toggleForm} /> : <Register onToggle={toggleForm} />}
     </>
   );
 };
