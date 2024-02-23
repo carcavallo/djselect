@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotifier } from '../useNotifier';
-import 'react-toastify/dist/ReactToastify.css';
 
 interface LoginProps {
   onToggle: () => void;
