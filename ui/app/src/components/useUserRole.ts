@@ -17,7 +17,7 @@ interface SessionData {
 export const useUserRole = () => {
   const navigate = useNavigate();
   const [role, setRole] = useState<UserRole>(null);
-  const {error, setError, notifyError} = useNotifier();
+  const {error, setError, notifyError, notifySuccess} = useNotifier();
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -25,10 +25,6 @@ export const useUserRole = () => {
         const sessionResponse = await fetch('http://localhost:80/api/users/session', {
           credentials: 'include',
         });
-
-        if (!sessionResponse.ok) {
-          navigate('/');
-        }
 
         const sessionData = await sessionResponse.json() as SessionData;
         if (sessionData.status === 'error') {
@@ -39,10 +35,6 @@ export const useUserRole = () => {
         const userDetailsResponse = await fetch(`http://localhost:80/api/users/${sessionData.data?.user_id}`, {
           credentials: 'include',
         });
-
-        if (!userDetailsResponse.ok) {
-          throw new Error('User details response not OK');
-        }
 
         const userDetailsData = await userDetailsResponse.json() as SessionData;
         if (userDetailsData.status === 'error') {
@@ -57,7 +49,7 @@ export const useUserRole = () => {
     };
 
     fetchUserRole();
-  }, [navigate, notifyError, notifyError]);
+  }, [navigate, notifyError, notifyError, setError]);
 
-  return { role, error, notifyError };
+  return { role, error, notifyError, notifySuccess };
 };
