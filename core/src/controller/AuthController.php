@@ -134,6 +134,15 @@ class AuthController extends IOController
         }
     }
 
+    /**
+     * Initiates the process for a user to reset their password. It checks for the user's email in the database.
+     * If the email exists, it generates a reset token and sends a password reset link to the user's email.
+     * The reset token is valid for one hour. It sends a success message indicating that if the email is registered,
+     * a reset link will be sent. This message is sent regardless of whether the email is in the database to prevent
+     * information disclosure about registered emails.
+     * @return void
+     * @throws Exception If there's an issue sending the email through PHPMailer.
+     */
     public function requestPasswordReset(): void
     {
         $this->checkPostArguments(["email"]);
@@ -181,7 +190,14 @@ class AuthController extends IOController
             $this->sendResponse("success", "If the email is registered, you will receive a password reset link.");
         }
     }
-
+    
+    /**
+     * Confirms the password reset request by checking the provided reset token. It updates the user's password
+     * if the token is valid and has not expired. It sends a success message upon successful password reset or
+     * an error message if the token is invalid or has expired.
+     * @return void
+     * @throws Exception If there's an error updating the user's password in the database.
+     */
     public function confirmResetPassword(): void
     {
         $this->checkPostArguments(["token", "password"]);

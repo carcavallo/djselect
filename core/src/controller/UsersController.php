@@ -13,7 +13,7 @@ class UsersController extends IOController
     use getter;
 
     /**
-     * Fetches and returns all users.
+     * Retrieves all users.
      * @return void
      */
     public function getUsers(): void
