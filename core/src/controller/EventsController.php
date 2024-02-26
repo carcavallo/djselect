@@ -35,24 +35,13 @@ class EventsController extends IOController
 
     /**
      * Retrieves an event based on the provided event ID.
-     * Returns the event details if found, or an error message if the event does not exist.
      * @param string $eventId The unique identifier of the event to retrieve.
      * @return void
-     * @throws Exception If there's an error during the database operation.
      */
     public function getEvent(string $eventId): void
     {
-        $event = DataRepo::of(Event::class)->select(
-            where: [
-                "event_id" => ["=" => $eventId],
-            ]
-        );
-
-        if (!empty($event)) {
-            $this->sendResponse("success", "Event retrieved successfully", $event[0]->toArray());
-        } else {
-            $this->sendResponse("error", "Event not found", null, 404);
-        }
+        $event = $this->_getEvent($eventId);
+        $this->sendResponse("success", "Event retrieved successfully", $event->toArray());
     }
 
     /**
@@ -87,7 +76,6 @@ class EventsController extends IOController
             $this->sendResponse("success", "Event updated successfully");
         }
     }
-    
 
     /**
      * Deletes an event based on the provided event ID.
@@ -100,9 +88,7 @@ class EventsController extends IOController
     public function deleteEvent(string $eventId): void
     {
         $event = DataRepo::of(Event::class)->select(
-            where: [
-                "event_id" => ["=" => $eventId],
-            ]
+            where: ["event_id" => ["=" => $eventId]]
         );
 
         if (empty($event)) {

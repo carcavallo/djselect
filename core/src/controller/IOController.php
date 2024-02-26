@@ -17,7 +17,6 @@ class IOController
 
     /**
      * Constructor of the class. Initializes a logger to write log entries to a file.
-     *
      * @return void
      */
     public function __construct()
@@ -44,7 +43,6 @@ class IOController
     /**
      * Checks whether all required POST arguments are present and whether they are empty.
      * If an argument is missing or empty, an error message is returned.
-     *
      * @param array $args An array with all required arguments.
      * @return void
      */
@@ -72,7 +70,6 @@ class IOController
 
     /**
      * Returns a level object based on the specified HTTP status code.
-     *
      * @param int $code The HTTP status code.
      * @return Level The level object associated with the specified status code.
      */
@@ -91,7 +88,6 @@ class IOController
 
     /**
      * Sends an HTTP response as a JSON object and writes the corresponding log entry.
-     *
      * @param string $status The status of the response ("success" or "error").
      * @param string $message A message to be returned in the response.
      * @param array|object|null $data An associative array or object containing the data to be returned in the response.
@@ -124,7 +120,6 @@ class IOController
     /**
      * Writes a log message with the specified code and message to the log file.
      * The optional context variable makes it possible to replace placeholders in the message with the actual value.
-     *
      * @param string $message The message to be written
      * @param array|null $context An optional associative array with key-value pairs to be used as placeholders in the message
      * @param int $code The code of the log message to indicate the severity of the message
@@ -146,7 +141,6 @@ class IOController
 
     /**
      * Returns an error message that the requested resource was not found.
-     *
      * @return void
      */
     public function show404(): void

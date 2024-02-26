@@ -2,11 +2,9 @@
 
 namespace controller;
 
-use Exception;
 use lib\DataRepo\DataRepo;
 use model\User;
 use trait\getter;
-use function util\removeArrayKeys;
 
 class UsersController extends IOController
 {
@@ -18,11 +16,11 @@ class UsersController extends IOController
      */
     public function getUsers(): void
     {
-        try {
-            $users = DataRepo::of(User::class)->select();
+        $users = DataRepo::of(User::class)->select();
+        if (empty($users)) {
+            $this->sendResponse("error", "No users found", null, 404);
+        } else {
             $this->sendResponse("success", "Users retrieved successfully", $users);
-        } catch (Exception $e) {
-            $this->sendResponse("error", "Failed to retrieve users", null, 500);
         }
     }
 
@@ -33,21 +31,9 @@ class UsersController extends IOController
      */
     public function getUser(string $userId): void
     {
-        try {
-            $user = DataRepo::of(User::class)->select(
-                where: ['user_id' => ['=' => $userId]]
-            );
-
-            if (empty($user)) {
-                $this->sendResponse("error", "User not found", null, 404);
-                return;
-            }
-
-            $this->sendResponse("success", "User retrieved successfully", $user[0]->toArray());
-        } catch (Exception $e) {
-            $this->sendResponse("error", "Failed to retrieve user", null, 500);
-        }
-    } 
+        $user = $this->_getUser($userId);
+        $this->sendResponse("success", "User retrieved successfully", $user->toArray());
+    }
 
     /**
      * Updates an existing user with the details provided in the request body.
@@ -56,30 +42,18 @@ class UsersController extends IOController
      */
     public function updateUser(string $userId): void
     {
-        try {
-            $user = DataRepo::of(User::class)->select(
-                where: ['user_id' => ['=' => $userId]]
-            );
+        $user = $this->_getUser($userId);
 
-            if (empty($user)) {
-                $this->sendResponse("error", "User not found", null, 404);
-                return;
+        foreach ($_POST as $key => $value) {
+            if (property_exists($user, $key) && !in_array($key, ['user_id', 'created_at', 'updated_at'])) {
+                $user->$key = $value;
             }
+        }
 
-            $user = $user[0];
-            foreach ($_POST as $key => $value) {
-                if (property_exists($user, $key) && !in_array($key, ['user_id', 'created_at', 'updated_at'])) {
-                    $user->$key = $value;
-                }
-            }
-
-            if (!DataRepo::update($user)) {
-                $this->sendResponse("error", "Failed to update user", null, 500);
-            } else {
-                $this->sendResponse("success", "User updated successfully");
-            }
-        } catch (Exception $e) {
+        if (!DataRepo::update($user)) {
             $this->sendResponse("error", "Failed to update user", null, 500);
+        } else {
+            $this->sendResponse("success", "User updated successfully");
         }
     }
 
@@ -90,22 +64,11 @@ class UsersController extends IOController
      */
     public function deleteUser(string $userId): void
     {
-        try {
-            $user = DataRepo::of(User::class)->select(
-                where: ['user_id' => ['=' => $userId]]
-            );
+        $user = $this->_getUser($userId);
 
-            if (empty($user)) {
-                $this->sendResponse("error", "User not found", null, 404);
-                return;
-            }
-
-            if (DataRepo::delete($user[0])) {
-                $this->sendResponse("success", "User deleted successfully");
-            } else {
-                $this->sendResponse("error", "Failed to delete user", null, 500);
-            }
-        } catch (Exception $e) {
+        if (DataRepo::delete($user)) {
+            $this->sendResponse("success", "User deleted successfully");
+        } else {
             $this->sendResponse("error", "Failed to delete user", null, 500);
         }
     }

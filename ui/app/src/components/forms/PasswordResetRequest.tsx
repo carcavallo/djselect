@@ -7,6 +7,7 @@ const PasswordResetRequest: React.FC = () => {
 
   const handlePasswordResetRequest = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
     try {
       const response = await fetch('http://localhost:80/api/auth/reset', {
         method: 'POST',

@@ -36,46 +36,30 @@ class BookingsController extends IOController
 
     /**
      * Retrieves a booking based on the booking ID provided.
+     * Utilizes the _getBooking method from the getter trait to fetch booking details.
      * @param string $bookingId The booking ID to search for.
      * @return void
      * @throws Exception
      */
     public function getBooking(string $bookingId): void
     {
-        $booking = DataRepo::of(Booking::class)->select(
-            where: [
-                "booking_id" => ["=" => $bookingId],
-            ]
-        );
+        $booking = $this->_getBooking($bookingId);
 
-        if (!empty($booking)) {
-            $this->sendResponse("success", "Booking retrieved successfully", $booking[0]->toArray());
-        } else {
-            $this->sendResponse("error", "Booking not found", null, 404);
-        }
+        // Successful retrieval sends the booking data
+        $this->sendResponse("success", "Booking retrieved successfully", $booking->toArray());
     }
 
     /**
      * Updates a booking with the specified details.
      * Validates the booking ID and the fields to be updated.
      * @param string $bookingId The booking ID to update.
-     * @param array $updateFields The fields to update in the booking.
      * @return void
      * @throws Exception
      */
     public function updateBooking(string $bookingId): void
     {
-        $booking = DataRepo::of(Booking::class)->select(
-            where: ["booking_id" => ["=" => $bookingId]]
-        );
-    
-        if (empty($booking)) {
-            $this->sendResponse("error", "Booking not found", null, 404);
-            return;
-        }
-    
-        $booking = $booking[0];
-    
+        $booking = $this->_getBooking($bookingId);
+
         foreach ($_POST as $key => $value) {
             if (property_exists($booking, $key) && !in_array($key, ['booking_id', 'created_at', 'updated_at'])) {
                 $booking->$key = $value;
@@ -91,24 +75,16 @@ class BookingsController extends IOController
     
     /**
      * Deletes a booking based on the provided booking ID.
+     * Verifies the booking's existence before proceeding with deletion.
      * @param string $bookingId The booking ID to delete.
      * @return void
      * @throws Exception
      */
     public function deleteBooking(string $bookingId): void
     {
-        $booking = DataRepo::of(Booking::class)->select(
-            where: [
-                "booking_id" => ["=" => $bookingId],
-            ]
-        );
+        $booking = $this->_getBooking($bookingId);
 
-        if (empty($booking)) {
-            $this->sendResponse("error", "Booking not found", null, 404);
-            return;
-        }
-
-        if (DataRepo::delete($booking[0])) {
+        if (DataRepo::delete($booking)) {
             $this->sendResponse("success", "Booking deleted successfully");
         } else {
             $this->sendResponse("error", "Failed to delete booking", null, 500);

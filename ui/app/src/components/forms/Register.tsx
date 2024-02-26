@@ -16,6 +16,7 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
     try {
       const response = await fetch('http://localhost:80/api/auth/register', {
         method: 'POST',

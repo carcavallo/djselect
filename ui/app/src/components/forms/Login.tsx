@@ -15,6 +15,7 @@ const Login: React.FC<LoginProps> = ({ onToggle, onForgotPassword }) => {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
     try {
       const response = await fetch('http://localhost:80/api/auth/login', {
         method: 'POST',
