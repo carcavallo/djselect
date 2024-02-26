@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Login from './forms/Login';
 import Register from './forms/Register';
-import PasswordResetRequest from './forms/PasswordResetRequest'; // Import the PasswordResetRequest form
+import PasswordResetRequest from './forms/PasswordResetRequest';
 
 const FORM_TYPES = {
   LOGIN: 'login',
