@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Login from './forms/Login';
 import Register from './forms/Register';
 import PasswordResetRequest from './forms/PasswordResetRequest';
-import { useUserRole } from './useUserRole';
+import { useAuth } from './AuthContext';
 
 const FORM_TYPES = {
   LOGIN: 'login',
@@ -13,14 +13,14 @@ const FORM_TYPES = {
 
 const Authentication: React.FC = () => {
   const [currentForm, setCurrentForm] = useState<string>(FORM_TYPES.LOGIN);
-  const { role } = useUserRole();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (role) {
+    if (isAuthenticated) {
       navigate('/dashboard');
     }
-  }, [role, navigate]);
+  }, [isAuthenticated, navigate]);
 
   const toggleForm = () => {
     setCurrentForm(currentForm === FORM_TYPES.LOGIN ? FORM_TYPES.REGISTER : FORM_TYPES.LOGIN);

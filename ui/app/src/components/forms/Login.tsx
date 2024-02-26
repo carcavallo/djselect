@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 import { useNotifier } from '../useNotifier';
 
 interface LoginProps {
@@ -8,30 +8,17 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ onToggle, onForgotPassword }) => {
-  const navigate = useNavigate();
+  const { login } = useAuth();
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const {error, notifyError, notifySuccess} = useNotifier();
+  const { error, notifyError, notifySuccess } = useNotifier();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     try {
-      const response = await fetch('http://localhost:80/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ username, password }),
-      });
-      if (response.ok) {
-        notifySuccess('Logged in successfully.');
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 2000);
-      } else {
-        const data = await response.json();
-        notifyError(data.message || 'Failed to login');
-      }
+      await login(username, password);
+      notifySuccess('Logged in successfully.');
     } catch (error: any) {
       notifyError(error.message || 'An error occurred during login');
     }
