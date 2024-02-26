@@ -4,6 +4,8 @@ namespace trait;
 
 use lib\DataRepo\DataRepo;
 use model\User;
+use model\Event;
+use model\Booking;
 use controller\AuthController;
 
 trait getter
@@ -20,7 +22,7 @@ trait getter
         );
 
         if (empty($user)) {
-            if ($id === $_SESSION["user_id"]) {
+            if (isset($_SESSION["user_id"]) && $id === $_SESSION["user_id"]) {
                 (new AuthController())->logout(false);
                 $this->sendResponse("error", "This account is invalid", null, 403);
             }
@@ -45,18 +47,19 @@ trait getter
             $this->sendResponse("error", "Event not found", null, 404);
         }
 
+
         return $event[0];
     }
 
     /**
      * Retrieves a booking based on the booking ID provided.
-     * @param string $bookingId The booking ID to search for.
+     * @param string $id The booking ID to search for.
      * @return object The booking object.
      */
-    protected function _getBooking(string $bookingId): object
+    protected function _getBooking(string $id): object
     {
         $booking = DataRepo::of(Booking::class)->select(
-            where: ["booking_id" => ["=" => $bookingId]]
+            where: ["booking_id" => ["=" => $id]]
         );
 
         if (empty($booking)) {

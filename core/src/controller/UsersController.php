@@ -5,6 +5,7 @@ namespace controller;
 use lib\DataRepo\DataRepo;
 use model\User;
 use trait\getter;
+use function util\removeArrayKeys;
 
 class UsersController extends IOController
 {
@@ -17,6 +18,7 @@ class UsersController extends IOController
     public function getUsers(): void
     {
         $users = DataRepo::of(User::class)->select();
+        
         if (empty($users)) {
             $this->sendResponse("error", "No users found", null, 404);
         } else {
@@ -32,7 +34,7 @@ class UsersController extends IOController
     public function getUser(string $userId): void
     {
         $user = $this->_getUser($userId);
-        $this->sendResponse("success", "User retrieved successfully", $user->toArray());
+        $this->sendResponse("success", "User retrieved successfully", removeArrayKeys($user->toArray(), ['password', 'reset_token', 'reset_token_expires']));
     }
 
     /**

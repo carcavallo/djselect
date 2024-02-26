@@ -209,7 +209,7 @@ class AuthController extends IOController
             where: ["reset_token" => ["=" => $token]]
         );
 
-        if (empty($user) || new \DateTime() > new \DateTime($user[0]->reset_token_expires)) {
+        if (empty($user) || new DateTime() > new DateTime($user[0]->reset_token_expires)) {
             $this->sendResponse("error", "Reset token is invalid or has expired", null, 400);
             return;
         }

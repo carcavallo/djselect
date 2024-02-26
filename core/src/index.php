@@ -69,9 +69,9 @@ $router->setBasePath("/api");
 
 $router->set404("IOController@show404");
 
-$router->before("GET|POST|PUT|DELETE", "/users/.*", "AuthController@checkLogin");
-$router->before("GET|POST|PUT|DELETE", "/events/.*", "AuthController@checkLogin");
-$router->before("GET|POST|PUT|DELETE", "/bookings/.*", "AuthController@checkLogin");
+#$router->before("GET|POST|PUT|DELETE", "/users/.*", "AuthController@checkLogin");
+#$router->before("GET|POST|PUT|DELETE", "/events/.*", "AuthController@checkLogin");
+#$router->before("GET|POST|PUT|DELETE", "/bookings/.*", "AuthController@checkLogin");
 
 $router->mount("/auth", function () use ($router) {
     $router->post("/login", "AuthController@login");
@@ -83,6 +83,7 @@ $router->mount("/auth", function () use ($router) {
 });
 
 $router->mount('/users', function () use ($router) {
+    $router->get('/', 'UsersController@getUsers');
     $router->get('/{userId}', 'UsersController@getUser');
     $router->put('/{userId}', 'UsersController@updateUser');
     $router->delete('/{userId}', 'UsersController@deleteUser');

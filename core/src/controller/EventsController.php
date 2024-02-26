@@ -4,8 +4,8 @@ namespace controller;
 
 use Exception;
 use lib\DataRepo\DataRepo;
-use trait\getter;
 use model\Event;
+use trait\getter;
 use function util\removeArrayKeys;
 use function util\removeArrayValues;
 
@@ -25,6 +25,7 @@ class EventsController extends IOController
         $this->checkPostArguments($requiredFields);
 
         $event = Event::fromArray($_POST);
+
         if (!DataRepo::insert($event)) {
             $this->sendResponse("error", "Failed to create event", null, 500);
             return;
@@ -54,16 +55,8 @@ class EventsController extends IOController
      */
     public function updateEvent(string $eventId): void
     {
-        $event = DataRepo::of(Event::class)->select(
-            where: ["event_id" => ["=" => $eventId]]
-        );
+        $event = $this->_getEvent($eventId);
     
-        if (empty($event)) {
-            $this->sendResponse("error", "Event not found", null, 404);
-            return;
-        }
-    
-        $event = $event[0];
         foreach ($_POST as $key => $value) {
             if (property_exists($event, $key) && !in_array($key, ['event_id', 'created_at', 'updated_at'])) {
                 $event->$key = $value;
@@ -87,16 +80,9 @@ class EventsController extends IOController
      */
     public function deleteEvent(string $eventId): void
     {
-        $event = DataRepo::of(Event::class)->select(
-            where: ["event_id" => ["=" => $eventId]]
-        );
+        $event = $this->_getEvent($eventId);
 
-        if (empty($event)) {
-            $this->sendResponse("error", "Event not found", null, 404);
-            return;
-        }
-
-        if (DataRepo::delete($event[0])) {
+        if (DataRepo::delete($event)) {
             $this->sendResponse("success", "Event deleted successfully");
         } else {
             $this->sendResponse("error", "Failed to delete event", null, 500);

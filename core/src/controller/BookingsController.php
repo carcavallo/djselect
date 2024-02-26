@@ -44,8 +44,6 @@ class BookingsController extends IOController
     public function getBooking(string $bookingId): void
     {
         $booking = $this->_getBooking($bookingId);
-
-        // Successful retrieval sends the booking data
         $this->sendResponse("success", "Booking retrieved successfully", $booking->toArray());
     }
 
