@@ -4,9 +4,10 @@ import { useNotifier } from '../useNotifier';
 
 interface LoginProps {
   onToggle: () => void;
+  onForgotPassword: () => void;
 }
 
-const Login: React.FC<LoginProps> = ({ onToggle }) => {
+const Login: React.FC<LoginProps> = ({ onToggle, onForgotPassword }) => {
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -82,6 +83,11 @@ const Login: React.FC<LoginProps> = ({ onToggle }) => {
             className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Sign in
+          </button>
+        </div>
+        <div className="mt-2 text-center text-sm text-gray-600">
+          <button onClick={onForgotPassword} className="font-medium text-indigo-600 hover:text-indigo-500">
+            Forgot your password?
           </button>
         </div>
       </form>

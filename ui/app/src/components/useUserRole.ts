@@ -28,7 +28,7 @@ export const useUserRole = () => {
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        const sessionResponse = await fetch('http://localhost:80/api/users/session', {
+        const sessionResponse = await fetch('http://localhost:80/api/auth/session', {
           credentials: 'include',
         });
 

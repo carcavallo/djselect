@@ -54,7 +54,7 @@ class AuthController extends IOController
      */
     public function register(): void
     {
-        $arguments = removeArrayValues(User::getDbFields(), ["user_id", "role", "last_login", "created_at"]);
+        $arguments = removeArrayValues(User::getDbFields(), ["user_id", "role", "last_login", "created_at", "reset_token", "reset_token_expires"]);
         $this->checkPostArguments($arguments);
 
         $_POST["username"] = strtolower($_POST["username"]);
@@ -90,11 +90,22 @@ class AuthController extends IOController
             return;
         }
     
-        $_SESSION = $user->toArray();
-        unset($_SESSION['password']);
+        $this->sendResponse("success", "Registration successful");
+    }
 
-        $this->sendResponse("success", "Registration successful", removeArrayKeys($_SESSION, ["password"]));
-    }  
+    /**
+     * Retrieves session data for the current logged-in user.
+     * Note: This function assumes the user's ID is stored in the session upon login.
+     * @return array|null The session data for the current user or null if not logged in.
+     */
+    public function getSession()
+    {
+        if (isset($_SESSION['user']['user_id']) && $_SESSION['expires'] > time()) {
+            $this->sendResponse("success", "User Session retrieved successfully", removeArrayKeys($_SESSION, ['password']));
+        } else {
+            $this->sendResponse("error", "Session expired or not logged in", null, 401);
+        }
+    }   
     
     /**
      * Ends the current session and returns a success message if $respond is set to true.
@@ -154,12 +165,12 @@ class AuthController extends IOController
                 $mail->Port = 587;
                 $mail->CharSet = 'UTF-8';
     
-                $mail->setFrom('djselect@alessio.fm', 'DJSELECT');
+                $mail->setFrom('alessiopirovino@gmail.com', 'DJSELECT');
                 $mail->addAddress($email);
     
                 $mail->isHTML(true);
                 $mail->Subject = 'Password Reset Request';
-                $mail->Body    = 'Please click on the following link to reset your password: <a href="http://localhost/reset_password.php?token=' . $token . '">Reset Password</a>';
+                $mail->Body = 'Please click on the following link to reset your password: <a href="http://localhost:3000/reset-password?token=' . $token . '">Reset Password</a>';
     
                 $mail->send();
                 $this->sendResponse("success", "If the email is registered, you will receive a password reset link.");
@@ -168,6 +179,35 @@ class AuthController extends IOController
             }
         } else {
             $this->sendResponse("success", "If the email is registered, you will receive a password reset link.");
+        }
+    }
+
+    public function confirmResetPassword(): void
+    {
+        $this->checkPostArguments(["token", "password"]);
+
+        $token = $_POST["token"];
+        $newPassword = $_POST["password"];
+
+        $user = DataRepo::of(User::class)->select(
+            where: ["reset_token" => ["=" => $token]]
+        );
+
+        if (empty($user) || new \DateTime() > new \DateTime($user[0]->reset_token_expires)) {
+            $this->sendResponse("error", "Reset token is invalid or has expired", null, 400);
+            return;
+        }
+
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+        $user[0]->password = $hashedPassword;
+        $user[0]->reset_token = null;
+        $user[0]->reset_token_expires = null;
+
+        if (DataRepo::update($user[0])) {
+            $this->sendResponse("success", "Password has been reset successfully.");
+        } else {
+            $this->sendResponse("error", "Failed to reset password", null, 500);
         }
     }
 }

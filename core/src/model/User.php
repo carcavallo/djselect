@@ -23,7 +23,11 @@ class User implements JsonSerializable {
     #[db_column]
     public string $role;
     #[db_column]
-    public ?int $last_login;
+    public ?string $reset_token = null;
+    #[db_column]
+    public ?string $reset_token_expires = null;
+    #[db_column]
+    public ?int $last_login = null;
     #[db_column]
     public string $created_at;
 }

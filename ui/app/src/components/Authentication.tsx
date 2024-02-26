@@ -1,16 +1,32 @@
 import React, { useState } from 'react';
 import Login from './forms/Login';
 import Register from './forms/Register';
+import PasswordResetRequest from './forms/PasswordResetRequest'; // Import the PasswordResetRequest form
 
+const FORM_TYPES = {
+  LOGIN: 'login',
+  REGISTER: 'register',
+  RESET_PASSWORD: 'resetPassword',
+};
 
 const Authentication: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [currentForm, setCurrentForm] = useState<string>(FORM_TYPES.LOGIN);
 
-  const toggleForm = () => setIsLogin(!isLogin);
+  const toggleForm = () => {
+    if (currentForm === FORM_TYPES.LOGIN) {
+      setCurrentForm(FORM_TYPES.REGISTER);
+    } else if (currentForm === FORM_TYPES.REGISTER) {
+      setCurrentForm(FORM_TYPES.LOGIN);
+    }
+  };
+
+  const showPasswordResetForm = () => setCurrentForm(FORM_TYPES.RESET_PASSWORD);
 
   return (
     <>
-      {isLogin ? <Login onToggle={toggleForm} /> : <Register onToggle={toggleForm} />}
+      {currentForm === FORM_TYPES.LOGIN && <Login onToggle={toggleForm} onForgotPassword={showPasswordResetForm} />}
+      {currentForm === FORM_TYPES.REGISTER && <Register onToggle={toggleForm} />}
+      {currentForm === FORM_TYPES.RESET_PASSWORD && <PasswordResetRequest />}
     </>
   );
 };

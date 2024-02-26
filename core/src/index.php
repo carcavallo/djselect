@@ -76,12 +76,13 @@ $router->set404("IOController@show404");
 $router->mount("/auth", function () use ($router) {
     $router->post("/login", "AuthController@login");
     $router->post("/register", "AuthController@register");
+    $router->get('/session', 'AuthController@getSession');
     $router->post("/logout", "AuthController@logout");
     $router->post("/reset", "AuthController@requestPasswordReset");
+    $router->post("/reset/confirm", "AuthController@confirmResetPassword");
 });
 
 $router->mount('/users', function () use ($router) {
-    $router->get('/session', 'UsersController@getUserSession');
     $router->get('/{userId}', 'UsersController@getUser');
     $router->put('/{userId}', 'UsersController@updateUser');
     $router->delete('/{userId}', 'UsersController@deleteUser');

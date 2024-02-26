@@ -47,21 +47,7 @@ class UsersController extends IOController
         } catch (Exception $e) {
             $this->sendResponse("error", "Failed to retrieve user", null, 500);
         }
-    }
-
-    /**
-     * Retrieves session data for the current logged-in user.
-     * Note: This function assumes the user's ID is stored in the session upon login.
-     * @return array|null The session data for the current user or null if not logged in.
-     */
-    public function getUserSession()
-    {
-        if (isset($_SESSION['user']['user_id']) && $_SESSION['expires'] > time()) {
-            $this->sendResponse("success", "User Session retrieved successfully", removeArrayKeys($_SESSION, ['password']));
-        } else {
-            $this->sendResponse("error", "Session expired or not logged in", null, 401);
-        }
-    }    
+    } 
 
     /**
      * Updates an existing user with the details provided in the request body.
