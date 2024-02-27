@@ -28,11 +28,11 @@ services:
       context: .
       dockerfile: ./config/react/Dockerfile
       args:
-        - REACT_APP_API_URL=http://localhost:8080
+        - REACT_APP_API_URL=http://localhost:8080/api
     ports:
       - "3000:80"
     volumes:
       - ./ui/app:/app
       - /app/node_modules
     environment:
-      - REACT_APP_API_URL=http://localhost:8080
+      - REACT_APP_API_URL=http://localhost:8080/api

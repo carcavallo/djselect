@@ -9,7 +9,7 @@ const PasswordResetRequest: React.FC = () => {
     e.preventDefault();
     
     try {
-      const response = await fetch('http://localhost:80/api/auth/reset', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/reset`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

@@ -23,7 +23,7 @@ const SetNewPassword: React.FC = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:80/api/auth/reset/confirm', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/reset/confirm`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, password }),
