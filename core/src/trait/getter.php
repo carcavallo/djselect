@@ -52,6 +52,25 @@ trait getter
     }
 
     /**
+     * Retrieves the created events based on the provided user ID.
+     * @param string $id The unique identifier of the event to retrieve.
+     * @return object The event object with the specified ID.
+     */
+    protected function _getUserEvents(string $id): object
+    {
+        $event = DataRepo::of(Event::class)->select(
+            where: ["organizer_id" => ["=" => $id]]
+        );
+
+        if (empty($event)) {
+            $this->sendResponse("error", "No events found for this user", null, 404);
+        }
+
+
+        return $event[0];
+    }
+
+    /**
      * Retrieves a booking based on the booking ID provided.
      * @param string $id The booking ID to search for.
      * @return object The booking object.

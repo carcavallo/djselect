@@ -6,6 +6,7 @@ import SetNewPassword from './components/forms/SetNewPassword';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './components/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import EditProfile from './components/forms/EditProfile';
 
 function RouterComponent() {
   return (
@@ -18,6 +19,7 @@ function RouterComponent() {
                 <Route path="/dashboard" element={<Dashboard />} />
               </Route>
               <Route path="/reset-password" element={<SetNewPassword />} />
+              <Route path="/edit-profile" element={<EditProfile />} />
             </Routes>
         </Router>
         <ToastContainer

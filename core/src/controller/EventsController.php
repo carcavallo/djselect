@@ -46,6 +46,17 @@ class EventsController extends IOController
     }
 
     /**
+     * Retrieves created events based on the provided user ID.
+     * @param string $eventId The unique identifier of the event to retrieve.
+     * @return void
+     */
+    public function getUserEvents(string $userId): void
+    {
+        $events = $this->_getUserEvents($userId);
+        $this->sendResponse("success", "Events retrieved successfully", $events);
+    }
+
+    /**
      * Updates an existing event with the specified details provided in the request body.
      * Validates the event ID and ensures the event exists before attempting to update.
      * Unsets non-updatable fields to prevent accidental modification.
