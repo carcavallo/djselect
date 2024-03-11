@@ -91,7 +91,7 @@ $router->mount('/users', function () use ($router) {
 
 $router->mount('/events', function () use ($router) {
     $router->post('/', 'EventsController@createEvent');
-    //$router->get('/{eventId}', 'EventsController@getEvent');
+    $router->get('/', 'EventsController@getEvents');
     $router->get('/user/{userId}', 'EventsController@getUserEvents');
     $router->put('/{eventId}', 'EventsController@updateEvent');
     $router->delete('/{eventId}', 'EventsController@deleteEvent');

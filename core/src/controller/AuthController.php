@@ -179,7 +179,7 @@ class AuthController extends IOController
     
                 $mail->isHTML(true);
                 $mail->Subject = 'Password Reset Request';
-                $mail->Body = 'Please click on the following link to reset your password: <a href="http://localhost:3000/reset-password?token=' . $token . '">Reset Password</a>';
+                $mail->Body = 'Please click on the following link to reset your password: <a href="http://localhost:3000/reset?token=' . $token . '">Reset Password</a>';
     
                 $mail->send();
                 $this->sendResponse("success", "If the email is registered, you will receive a password reset link.");

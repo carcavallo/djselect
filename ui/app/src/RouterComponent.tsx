@@ -18,8 +18,8 @@ function RouterComponent() {
               <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<Dashboard />} />
               </Route>
-              <Route path="/reset-password" element={<SetNewPassword />} />
-              <Route path="/edit-profile" element={<EditProfile />} />
+              <Route path="/reset" element={<SetNewPassword />} />
+              <Route path="/profile" element={<EditProfile />} />
             </Routes>
         </Router>
         <ToastContainer

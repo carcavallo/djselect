@@ -35,14 +35,18 @@ class EventsController extends IOController
     }
 
     /**
-     * Retrieves an event based on the provided event ID.
-     * @param string $eventId The unique identifier of the event to retrieve.
+     * Retrieves all events.
      * @return void
      */
-    public function getEvent(string $eventId): void
+    public function getEvents(): void
     {
-        $event = $this->_getEvent($eventId);
-        $this->sendResponse("success", "Event retrieved successfully", $event->toArray());
+        $events = DataRepo::of(Event::class)->select();
+
+        if (empty($events)) {
+            $this->sendResponse("error", "No events found", null, 404);
+        } else {
+            $this->sendResponse("success", "Events retrieved successfully", $events);
+        }    
     }
 
     /**

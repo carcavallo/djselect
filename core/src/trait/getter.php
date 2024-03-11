@@ -33,25 +33,6 @@ trait getter
     }
 
     /**
-     * Retrieves an event based on the provided event ID.
-     * @param string $id The unique identifier of the event to retrieve.
-     * @return object The event object with the specified ID.
-     */
-    protected function _getEvent(string $id): object
-    {
-        $event = DataRepo::of(Event::class)->select(
-            where: ["event_id" => ["=" => $id]]
-        );
-
-        if (empty($event)) {
-            $this->sendResponse("error", "Event not found", null, 404);
-        }
-
-
-        return $event[0];
-    }
-
-    /**
      * Retrieves the created events based on the provided user ID.
      * @param string $id The unique identifier of the event to retrieve.
      * @return object The event object with the specified ID.
