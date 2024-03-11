@@ -41,10 +41,17 @@ class BookingsController extends IOController
      * @return void
      * @throws Exception
      */
-    public function getBooking(string $bookingId): void
+    public function getBookings(string $userId): void
     {
-        $booking = $this->_getBooking($bookingId);
-        $this->sendResponse("success", "Booking retrieved successfully", $booking->toArray());
+        $bookings = DataRepo::of(Booking::class)->select(
+            where: ["dj_id" => ["=" => $userId]]
+        );
+
+        if (empty($bookings)) {
+            $this->sendResponse("error", "No bookings for this user found", null, 404);
+        }
+
+        $this->sendResponse("success", "Bookings retrieved successfully", $bookings);
     }
 
     /**

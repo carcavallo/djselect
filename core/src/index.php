@@ -100,7 +100,7 @@ $router->mount('/events', function () use ($router) {
 
 $router->mount('/bookings', function () use ($router) {
     $router->post('/', 'BookingsController@createBooking');
-    $router->get('/{bookingId}', 'BookingsController@getBooking');
+    $router->get('/{userId}', 'BookingsController@getBookings');
     $router->put('/{bookingId}', 'BookingsController@updateBooking');
     $router->delete('/{bookingId}', 'BookingsController@deleteBooking');
 });

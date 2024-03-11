@@ -50,22 +50,4 @@ trait getter
 
         return $event[0];
     }
-
-    /**
-     * Retrieves a booking based on the booking ID provided.
-     * @param string $id The booking ID to search for.
-     * @return object The booking object.
-     */
-    protected function _getBooking(string $id): object
-    {
-        $booking = DataRepo::of(Booking::class)->select(
-            where: ["booking_id" => ["=" => $id]]
-        );
-
-        if (empty($booking)) {
-            $this->sendResponse("error", "Booking not found", null, 404);
-        }
-
-        return $booking[0];
-    }
 }
