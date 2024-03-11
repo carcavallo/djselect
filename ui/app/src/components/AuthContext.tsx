@@ -29,7 +29,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const fetchUserRole = async (): Promise<UserRole> => {
   try {
-    const sessionResponse = await fetch(`${process.env.REACT_APP_API_URL}/auth/session`, {
+    const sessionResponse = await fetch(`http://localhost:80/api/auth/session`, {
       credentials: 'include',
     });
     const sessionData: SessionData = await sessionResponse.json();
@@ -62,7 +62,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, []);
   
     const login = async (username: string, password: string) => {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
+      const response = await fetch(`http://localhost:80/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
