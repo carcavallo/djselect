@@ -35,6 +35,24 @@ class EventsController extends IOController
     }
 
     /**
+     * Retrieve a event by its id.
+     * @param string $eventId The unique identifier of the event to retrieve.
+     * @return void
+     */
+    public function getEvent(string $eventId): void
+    {
+        $event = DataRepo::of(Event::class)->select(
+            where: ["event_id" => ["=" => $eventId]]
+        );
+
+        if (empty($event)) {
+            $this->sendResponse("error", "No event found", null, 404);
+        } else {
+            $this->sendResponse("success", "Event retrieved successfully", $event);
+        }    
+    }    
+
+    /**
      * Retrieves all events.
      * @return void
      */
@@ -51,7 +69,7 @@ class EventsController extends IOController
 
     /**
      * Retrieves created events based on the provided user ID.
-     * @param string $eventId The unique identifier of the event to retrieve.
+     * @param string $userId The unique identifier of the user.
      * @return void
      */
     public function getUserEvents(string $userId): void

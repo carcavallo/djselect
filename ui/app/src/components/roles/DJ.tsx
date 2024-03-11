@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CalendarDaysIcon } from '@heroicons/react/24/outline';
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -28,6 +29,7 @@ interface Event {
 
 const DJ: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -53,6 +55,10 @@ const DJ: React.FC = () => {
     fetchEvents();
   }, []);
 
+  const handleEventClick = (eventId: string) => {
+    navigate(`/events/${eventId}`);
+  };
+
   return (
     <div className="py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -64,7 +70,11 @@ const DJ: React.FC = () => {
         </div>
         <div className="mx-auto mt-16 grid max-w-2xl auto-rows-fr grid-cols-1 gap-8 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
           {events.map((event) => (
-            <article key={event.event_id} className="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 px-8 pb-8 pt-20 sm:pt-48 lg:pt-20">
+            <article 
+              key={event.event_id} 
+              onClick={() => handleEventClick(event.event_id)} 
+              className="relative isolate flex flex-col justify-end overflow-hidden cursor-pointer rounded-2xl bg-gray-900 px-8 pb-8 pt-20 sm:pt-48 lg:pt-20"
+            >
               <CalendarDaysIcon className="h-6 w-6 text-gray-300" aria-hidden="true" />
               <div className="absolute inset-0 -z-10 bg-gradient-to-t from-gray-900 via-gray-900/40" />
               <div className="absolute inset-0 -z-10 rounded-2xl ring-1 ring-inset ring-gray-900/10" />
