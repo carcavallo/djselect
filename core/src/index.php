@@ -105,4 +105,8 @@ $router->mount('/bookings', function () use ($router) {
     $router->delete('/{bookingId}', 'BookingsController@deleteBooking');
 });
 
+$router->mount('/boevents', function () use ($router) {
+    $router->get('/{eventId}', 'BookingsController@getBookingByEventId');
+});
+
 $router->run();

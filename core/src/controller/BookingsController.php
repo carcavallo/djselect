@@ -55,6 +55,26 @@ class BookingsController extends IOController
     }
 
     /**
+     * Retrieves a booking based on the booking ID provided.
+     * Utilizes the _getBooking method from the getter trait to fetch booking details.
+     * @param string $bookingId The booking ID to search for.
+     * @return void
+     * @throws Exception
+     */
+    public function getBookingByEventId(string $eventId): void
+    {
+        $event = DataRepo::of(Booking::class)->select(
+            where: ["event_id" => ["=" => $eventId]]
+        );
+
+        if (empty($event)) {
+            $this->sendResponse("error", "No booking for this event found", null, 404);
+        }
+
+        $this->sendResponse("success", "Booking for event retrieved successfully", $event);
+    }
+
+    /**
      * Updates a booking with the specified details.
      * Validates the booking ID and the fields to be updated.
      * @param string $bookingId The booking ID to update.
