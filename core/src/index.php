@@ -98,6 +98,9 @@ $router->mount('/events', function () use ($router) {
     $router->delete('/{eventId}', 'EventsController@deleteEvent');
 });
 
+$router->mount('/usevents', function () use ($router) {
+    $router->get('/{userId}', 'EventsController@getUserEvents');});
+
 $router->mount('/bookings', function () use ($router) {
     $router->post('/', 'BookingsController@createBooking');
     $router->get('/{userId}', 'BookingsController@getBookings');

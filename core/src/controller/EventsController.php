@@ -74,7 +74,10 @@ class EventsController extends IOController
      */
     public function getUserEvents(string $userId): void
     {
-        $events = $this->_getUserEvents($userId);
+        $events = DataRepo::of(Event::class)->select(
+            where: ["organizer_id" => ["=" => $userId]]
+        );
+
         $this->sendResponse("success", "Events retrieved successfully", $events);
     }
 

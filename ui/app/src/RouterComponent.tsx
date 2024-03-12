@@ -8,6 +8,9 @@ import { AuthProvider } from './components/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import EditProfile from './components/forms/EditProfile';
 import EventDetail from './components/EventDetail';
+import CreateEvent from './components/forms/CreateEvent';
+import EditEvent from './components/forms/EditEvent';
+import EventBookings from './components/forms/EventBookings';
 
 function RouterComponent() {
   return (
@@ -22,6 +25,9 @@ function RouterComponent() {
               <Route path="/reset" element={<SetNewPassword />} />
               <Route path="/profile" element={<EditProfile />} />
               <Route path="/events/:eventId" element={<EventDetail />} />
+              <Route path="/create-event" element={<CreateEvent />} />
+              <Route path="/edit-event/:eventId" element={<EditEvent />} />
+              <Route path="/event-requests/:eventId" element={<EventBookings />} />
             </Routes>
         </Router>
         <ToastContainer
