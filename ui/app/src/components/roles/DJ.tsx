@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CalendarDaysIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../AuthContext';
@@ -32,14 +32,10 @@ interface Event {
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'confirmed':
-      return 'text-green-500';
-    case 'pending':
-      return 'text-yellow-500';
-    case 'canceled':
-      return 'text-red-500';
-    default:
-      return 'text-gray-500';
+    case 'confirmed': return 'text-green-500';
+    case 'pending': return 'text-yellow-500';
+    case 'cancelled': return 'text-red-500';
+    default: return '';
   }
 };
 
@@ -49,16 +45,9 @@ const DJ: React.FC = () => {
   const [filter, setFilter] = useState('all');
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { notifyError, notifySuccess } = useNotifier();
+  const { notifyError } = useNotifier();
 
-  useEffect(() => {
-    fetchEvents();
-    if (user?.role === 'dj' && user.user_id) {
-      fetchBookings(user.user_id);
-    }
-  }, [user?.user_id]);
-
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     try {
       const response = await fetch('http://localhost/api/events', {
         method: 'GET',
@@ -74,9 +63,9 @@ const DJ: React.FC = () => {
     } catch (error: any) {
       notifyError(error.message || 'An error occurred while fetching events');
     }
-  };
-  
-  const fetchBookings = async (djId: string) => {
+  }, [notifyError]);
+
+  const fetchBookings = useCallback(async (djId: string) => {
     try {
       const response = await fetch(`http://localhost/api/bookings/${djId}`, {
         method: 'GET',
@@ -92,7 +81,14 @@ const DJ: React.FC = () => {
     } catch (error: any) {
       return;
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchEvents();
+    if (user?.role === 'dj' && user.user_id) {
+      fetchBookings(user.user_id);
+    }
+  }, [user?.user_id, user?.role]);
   
   const displayedEvents = events.map(event => {
     const booking = bookings.find(b => b.event_id === event.event_id);
@@ -114,7 +110,7 @@ const DJ: React.FC = () => {
           <button onClick={() => setFilter('booked')} className="btn">My Booked Events</button>
           <button onClick={() => setFilter('requested')} className="btn">My Requests</button>
         </div>
-        <div className="mx-auto mt-16 grid max-w-2xl auto-rows-fr grid-cols-1 gap-8 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+        <div className="mx-auto mt-16 grid max-w-2xl auto-rows-fr grid-cols-1 gap-8 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-4">
           {displayedEvents.map((event) => (
             <article 
               key={event.event_id}
