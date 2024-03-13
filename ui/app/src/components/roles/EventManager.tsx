@@ -29,7 +29,7 @@ const EventManager: React.FC = () => {
   const fetchEvents = async () => {
     try {
       const response = await fetch(
-        `http://localhost/api/usevents/${user?.user_id}`,
+        `${process.env.REACT_APP_API_URL}/usevents/${user?.user_id}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -53,10 +53,13 @@ const EventManager: React.FC = () => {
 
   const deleteEvent = async (eventId: string) => {
     try {
-      const response = await fetch(`http://localhost/api/events/${eventId}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/events/${eventId}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       if (response.ok) {
         setEvents((currentEvents) =>
           currentEvents.filter((event) => event.event_id !== eventId)

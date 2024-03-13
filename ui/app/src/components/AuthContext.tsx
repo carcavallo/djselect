@@ -44,9 +44,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const initializeAuth = async () => {
-    const response = await fetch(`http://localhost/api/auth/session`, {
-      credentials: "include",
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/auth/session`,
+      {
+        credentials: "include",
+      }
+    );
     const sessionData: SessionData = await response.json();
     if (sessionData.status === "success" && sessionData.data?.user.role) {
       setIsAuthenticated(true);
@@ -62,12 +65,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   const login = async (username: string, password: string) => {
-    const response = await fetch(`http://localhost/api/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ username, password }),
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/auth/login`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username, password }),
+      }
+    );
     if (response.ok) {
       // Re-initialize to fetch user info upon successful login
       initializeAuth();
@@ -78,13 +84,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const logout = async () => {
     try {
-      const response = await fetch("http://localhost/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "${process.env.REACT_APP_API_URL}/auth/logout",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
         setIsAuthenticated(false);

@@ -54,11 +54,14 @@ const EventDetail: React.FC = () => {
     const fetchEventDetail = async () => {
       if (!eventId) return;
       try {
-        const response = await fetch(`http://localhost/api/events/${eventId}`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/events/${eventId}`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          }
+        );
         const data = await response.json();
         if (data.status === "success" && data.data.length > 0) {
           setEvent(data.data[0]);
@@ -80,16 +83,19 @@ const EventDetail: React.FC = () => {
     if (!user || !eventId) return;
 
     try {
-      const response = await fetch("http://localhost/api/bookings/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          event_id: eventId,
-          dj_id: user.user_id,
-          status: "pending",
-        }),
-      });
+      const response = await fetch(
+        "${process.env.REACT_APP_API_URL}/bookings/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            event_id: eventId,
+            dj_id: user.user_id,
+            status: "pending",
+          }),
+        }
+      );
 
       if (response.ok) {
         notifySuccess("Booking request sent successfully!");

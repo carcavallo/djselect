@@ -66,7 +66,7 @@ const DJ: React.FC = () => {
 
   const fetchEvents = useCallback(async () => {
     try {
-      const response = await fetch("http://localhost/api/events", {
+      const response = await fetch("${process.env.REACT_APP_API_URL}/events", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -84,11 +84,14 @@ const DJ: React.FC = () => {
 
   const fetchBookings = useCallback(async (djId: string) => {
     try {
-      const response = await fetch(`http://localhost/api/bookings/${djId}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/bookings/${djId}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setBookings(data.data);
@@ -104,7 +107,7 @@ const DJ: React.FC = () => {
     event.stopPropagation();
     try {
       const bookingIdResponse = await fetch(
-        `http://localhost/api/boevents/${eventId}`,
+        `${process.env.REACT_APP_API_URL}/boevents/${eventId}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -115,7 +118,7 @@ const DJ: React.FC = () => {
         const response = await bookingIdResponse.json();
         const bookingId = response.data[0].booking_id;
         const cancelResponse = await fetch(
-          `http://localhost/api/bookings/${bookingId}`,
+          `${process.env.REACT_APP_API_URL}/bookings/${bookingId}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },

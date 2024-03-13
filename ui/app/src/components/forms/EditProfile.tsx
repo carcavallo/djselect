@@ -16,7 +16,7 @@ const EditProfile: React.FC = () => {
 
   useEffect(() => {
     if (isAuthenticated && !dataFetched) {
-      fetch(`http://localhost/api/auth/session`, {
+      fetch(`${process.env.REACT_APP_API_URL}/auth/session`, {
         credentials: "include",
       })
         .then((res) => res.json())
@@ -39,12 +39,15 @@ const EditProfile: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost/api/users/${userId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ username, email, password, role }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/users/${userId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ username, email, password, role }),
+        }
+      );
       if (response.ok) {
         notifySuccess("Profile updated successfully.");
         navigate("/");

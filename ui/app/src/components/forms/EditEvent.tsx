@@ -25,7 +25,7 @@ const EditEvent: React.FC = () => {
       const fetchEventDetails = async () => {
         try {
           const response = await fetch(
-            `http://localhost/api/events/${eventId}`,
+            `${process.env.REACT_APP_API_URL}/events/${eventId}`,
             {
               method: "GET",
               headers: { "Content-Type": "application/json" },
@@ -70,11 +70,14 @@ const EditEvent: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`http://localhost/api/events/${eventId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(eventDetails),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/events/${eventId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(eventDetails),
+        }
+      );
       if (response.ok) {
         notifySuccess("Event updated successfully.");
         navigate("/dashboard"); // Adjust the navigation as needed

@@ -27,11 +27,14 @@ const EventBookings: React.FC = () => {
 
   useEffect(() => {
     const fetchDJUsername = async (dj_id: string): Promise<string> => {
-      const response = await fetch(`http://localhost/api/users/${dj_id}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/users/${dj_id}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        }
+      );
       if (!response.ok) throw new Error("Failed to fetch DJ username");
       const { data } = await response.json();
       return data.username;
@@ -41,7 +44,7 @@ const EventBookings: React.FC = () => {
       setLoading(true);
       try {
         const bookingsResponse = await fetch(
-          `http://localhost/api/boevents/${eventId}`,
+          `${process.env.REACT_APP_API_URL}/boevents/${eventId}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -74,7 +77,7 @@ const EventBookings: React.FC = () => {
     newStatus: "confirmed" | "cancelled"
   ) => {
     try {
-      await fetch(`http://localhost/api/bookings/${bookingId}`, {
+      await fetch(`${process.env.REACT_APP_API_URL}/bookings/${bookingId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
