@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useNotifier } from '../useNotifier';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useNotifier } from "../useNotifier";
 
 interface RegisterProps {
   onToggle: () => void;
@@ -8,43 +8,48 @@ interface RegisterProps {
 
 const Register: React.FC<RegisterProps> = ({ onToggle }) => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [role, setRole] = useState<string>('dj');
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [role, setRole] = useState<string>("dj");
   const { error, notifyError, notifySuccess } = useNotifier();
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     try {
-      const response = await fetch('http://localhost:80/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+      const response = await fetch("http://localhost:80/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ username, password, email, role }),
       });
       if (response.ok) {
-        notifySuccess('Registered successfully');
+        notifySuccess("Registered successfully");
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate("/dashboard");
         }, 2000);
       } else {
         const data = await response.json();
-        notifyError(data.message || 'Failed to register');
+        notifyError(data.message || "Failed to register");
       }
     } catch (error: any) {
-      notifyError(error.message || 'An error occurred during registration');
+      notifyError(error.message || "An error occurred during registration");
     }
   };
 
   return (
     <div className="max-w-md mx-auto w-full space-y-8 p-6 sm:p-8">
       <div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">Register your account</h2>
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+          Register your account
+        </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Or{' '}
-          <button onClick={onToggle} className="font-medium text-indigo-600 hover:text-indigo-500">
+          Or{" "}
+          <button
+            onClick={onToggle}
+            className="font-medium text-indigo-600 hover:text-indigo-500"
+          >
             sign in to your existing account
           </button>
         </p>

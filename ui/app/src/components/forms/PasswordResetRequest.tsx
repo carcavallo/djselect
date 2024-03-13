@@ -1,37 +1,45 @@
-import React, { useState } from 'react';
-import { useNotifier } from '../useNotifier';
+import React, { useState } from "react";
+import { useNotifier } from "../useNotifier";
 
 const PasswordResetRequest: React.FC = () => {
-  const [email, setEmail] = useState<string>('');
+  const [email, setEmail] = useState<string>("");
   const { notifyError, notifySuccess } = useNotifier();
 
-  const handlePasswordResetRequest = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handlePasswordResetRequest = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
-    
+
     try {
       const response = await fetch(`http://localhost:80/api/auth/reset`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
       if (response.ok) {
-        notifySuccess('If the email is registered, you will receive a password reset link.');
+        notifySuccess(
+          "If the email is registered, you will receive a password reset link."
+        );
         setTimeout(() => {
-            window.location.href = '/';
+          window.location.href = "/";
         }, 4000);
       } else {
         const data = await response.json();
-        notifyError(data.message || 'Failed to request password reset');
+        notifyError(data.message || "Failed to request password reset");
       }
     } catch (error: any) {
-      notifyError(error.message || 'An error occurred during the password reset request');
+      notifyError(
+        error.message || "An error occurred during the password reset request"
+      );
     }
   };
 
   return (
     <div className="max-w-md mx-auto w-full space-y-8 p-6 sm:p-8">
       <div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">Request Password Reset</h2>
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+          Request Password Reset
+        </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Enter your email and we'll send you a link to reset your password.
         </p>
