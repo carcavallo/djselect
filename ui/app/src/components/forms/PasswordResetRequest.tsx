@@ -11,11 +11,14 @@ const PasswordResetRequest: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`http://localhost:80/api/auth/reset`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/auth/reset`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }
+      );
       if (response.ok) {
         notifySuccess(
           "If the email is registered, you will receive a password reset link."

@@ -66,7 +66,7 @@ const DJ: React.FC = () => {
 
   const fetchEvents = useCallback(async () => {
     try {
-      const response = await fetch("${process.env.REACT_APP_API_URL}/events", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/events`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

@@ -18,12 +18,15 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:80/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ username, password, email, role }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/auth/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ username, password, email, role }),
+        }
+      );
       if (response.ok) {
         notifySuccess("Registered successfully");
         setTimeout(() => {
