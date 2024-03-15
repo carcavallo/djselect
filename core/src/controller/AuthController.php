@@ -95,7 +95,6 @@ class AuthController extends IOController
 
     /**
      * Retrieves session data for the current logged-in user.
-     * Note: This function assumes the user's ID is stored in the session upon login.
      * @return array|null The session data for the current user or null if not logged in.
      */
     public function getSession()

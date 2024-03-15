@@ -55,9 +55,8 @@ class BookingsController extends IOController
     }
 
     /**
-     * Retrieves a booking based on the booking ID provided.
-     * Utilizes the _getBooking method from the getter trait to fetch booking details.
-     * @param string $bookingId The booking ID to search for.
+     * Retrieves bookings based on the Event ID provided.
+     * @param string $eventId The event ID to search with.
      * @return void
      * @throws Exception
      */

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useNotifier } from "../useNotifier";
-import { CheckIcon, XCircleIcon } from "@heroicons/react/24/solid";
-import Navigation from "../Navigation";
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useNotifier } from '../useNotifier';
+import { CheckIcon, XCircleIcon } from '@heroicons/react/24/solid';
+import Navigation from '../Navigation';
 
 interface Booking {
   booking_id: string;
@@ -24,6 +24,7 @@ const EventBookings: React.FC = () => {
   const { notifyError, notifySuccess } = useNotifier();
   const [bookings, setBookings] = useState<BookingWithDJUsername[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDJUsername = async (dj_id: string): Promise<string> => {
@@ -43,15 +44,12 @@ const EventBookings: React.FC = () => {
     const fetchBookings = async () => {
       setLoading(true);
       try {
-        const bookingsResponse = await fetch(
-          `${process.env.REACT_APP_API_URL}/boevents/${eventId}`,
-          {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-          }
-        );
-        if (!bookingsResponse.ok) throw new Error("Failed to fetch bookings");
+        const bookingsResponse = await fetch(`http://localhost/api/boevents/${eventId}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        });
+        if (!bookingsResponse.ok) return;
         const bookingsData = await bookingsResponse.json();
         const bookingsWithUsernames = await Promise.all(
           bookingsData.data.map(async (booking: Booking) => {
@@ -72,10 +70,11 @@ const EventBookings: React.FC = () => {
     fetchBookings();
   }, [eventId]);
 
-  const handleStatusChange = async (
-    bookingId: string,
-    newStatus: "confirmed" | "cancelled"
-  ) => {
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  const handleStatusChange = async (bookingId: string, newStatus: 'confirmed' | 'cancelled') => {
     try {
       await fetch(`${process.env.REACT_APP_API_URL}/bookings/${bookingId}`, {
         method: "PUT",
@@ -175,11 +174,15 @@ const EventBookings: React.FC = () => {
               </div>
             </div>
           ) : (
-            <p className="mt-5 text-center text-lg text-gray-500">
-              No booking requests found for this event.
-            </p>
-          )}
-        </div>
+            <p className="mt-5 text-center text-lg text-gray-500">No booking requests found for this event.</p>
+          )
+          }
+      </div>
+      <div className="mt-2 text-center text-sm text-gray-600">
+        <button onClick={handleBack} className="font-medium text-indigo-600 hover:text-indigo-500">
+          Back
+        </button>
+      </div>
       </div>
     </>
   );

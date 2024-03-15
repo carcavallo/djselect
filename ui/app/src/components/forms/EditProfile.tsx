@@ -36,6 +36,10 @@ const EditProfile: React.FC = () => {
     }
   }, [isAuthenticated, dataFetched, notifyError]);
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -111,6 +115,11 @@ const EditProfile: React.FC = () => {
             </button>
           </div>
         </form>
+        <div className="mt-2 text-center text-sm text-gray-600">
+          <button onClick={handleBack} className="font-medium text-indigo-600 hover:text-indigo-500">
+            Back
+          </button>
+        </div>
       </div>
     </>
   );

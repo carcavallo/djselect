@@ -17,21 +17,18 @@ function RouterComponent() {
     <AuthProvider>
       <>
         <Router>
-          <Routes>
-            <Route path="/" element={<Authentication />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-            </Route>
-            <Route path="/reset" element={<SetNewPassword />} />
-            <Route path="/profile" element={<EditProfile />} />
-            <Route path="/events/:eventId" element={<EventDetail />} />
-            <Route path="/create-event" element={<CreateEvent />} />
-            <Route path="/edit-event/:eventId" element={<EditEvent />} />
-            <Route
-              path="/event-requests/:eventId"
-              element={<EventBookings />}
-            />
-          </Routes>
+            <Routes>
+              <Route path="/" element={<Authentication />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/reset" element={<SetNewPassword />} />
+                <Route path="/profile" element={<EditProfile />} />
+                <Route path="/events/:eventId" element={<EventDetail />} />
+                <Route path="/create-event" element={<CreateEvent />} />
+                <Route path="/edit-event/:eventId" element={<EditEvent />} />
+                <Route path="/event-requests/:eventId" element={<EventBookings />} />
+              </Route>
+            </Routes>
         </Router>
         <ToastContainer
           position="top-right"
