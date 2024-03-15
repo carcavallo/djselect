@@ -106,7 +106,7 @@ const DJ: React.FC = () => {
   const cancelBooking = async (eventId: string, event: any) => {
     event.stopPropagation();
     try {
-      const bookingsResponse = await fetch(`http://localhost/api/boevents/${eventId}`, {
+      const bookingsResponse = await fetch(`${process.env.REACT_APP_API_URL}/boevents/${eventId}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -117,7 +117,7 @@ const DJ: React.FC = () => {
       const userBooking = bookingsData.find((booking: any) => booking.dj_id === user?.user_id);
       if (!userBooking) throw new Error("Booking not found for the current user.");
   
-      const cancelResponse = await fetch(`http://localhost/api/bookings/${userBooking.booking_id}`, {
+      const cancelResponse = await fetch(`${process.env.REACT_APP_API_URL}/bookings/${userBooking.booking_id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: "cancelled" }),

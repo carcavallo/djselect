@@ -44,7 +44,7 @@ const EventBookings: React.FC = () => {
     const fetchBookings = async () => {
       setLoading(true);
       try {
-        const bookingsResponse = await fetch(`http://localhost/api/boevents/${eventId}`, {
+        const bookingsResponse = await fetch(`${process.env.REACT_APP_API_URL}/boevents/${eventId}`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
