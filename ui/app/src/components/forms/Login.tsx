@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useAuth } from '../AuthContext';
-import { useNotifier } from '../useNotifier';
+import React, { useState } from "react";
+import { useAuth } from "../AuthContext";
+import { useNotifier } from "../useNotifier";
 
 interface LoginProps {
   onToggle: () => void;
@@ -9,8 +9,8 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({ onToggle, onForgotPassword }) => {
   const { login } = useAuth();
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const { error, notifyError, notifySuccess } = useNotifier();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -18,19 +18,24 @@ const Login: React.FC<LoginProps> = ({ onToggle, onForgotPassword }) => {
 
     try {
       await login(username, password);
-      notifySuccess('Logged in successfully.');
+      notifySuccess("Logged in successfully.");
     } catch (error: any) {
-      notifyError(error.message || 'An error occurred during login');
+      notifyError(error.message || "An error occurred during login");
     }
   };
 
   return (
     <div className="max-w-md mx-auto w-full space-y-8 p-6 sm:p-8">
       <div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">Sign in to your account</h2>
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+          Sign in to your account
+        </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Or{' '}
-          <button onClick={onToggle} className="font-medium text-indigo-600 hover:text-indigo-500">
+          Or{" "}
+          <button
+            onClick={onToggle}
+            className="font-medium text-indigo-600 hover:text-indigo-500"
+          >
             register a new account
           </button>
         </p>
@@ -74,7 +79,10 @@ const Login: React.FC<LoginProps> = ({ onToggle, onForgotPassword }) => {
           </button>
         </div>
         <div className="mt-2 text-center text-sm text-gray-600">
-          <button onClick={onForgotPassword} className="font-medium text-indigo-600 hover:text-indigo-500">
+          <button
+            onClick={onForgotPassword}
+            className="font-medium text-indigo-600 hover:text-indigo-500"
+          >
             Forgot your password?
           </button>
         </div>

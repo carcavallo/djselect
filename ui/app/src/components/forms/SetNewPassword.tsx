@@ -1,51 +1,58 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useNotifier } from '../useNotifier';
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useNotifier } from "../useNotifier";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
-}
+};
 
 const SetNewPassword: React.FC = () => {
-  const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const { notifyError, notifySuccess } = useNotifier();
   const navigate = useNavigate();
   const query = useQuery();
-  const token = query.get('token');
+  const token = query.get("token");
 
   const handleSetNewPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      notifyError('Passwords do not match');
+      notifyError("Passwords do not match");
       return;
     }
 
     try {
-      const response = await fetch(`http://localhost:80/api/auth/reset/confirm`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, password }),
-      });
+      const response = await fetch(
+        `http://localhost:80/api/auth/reset/confirm`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token, password }),
+        }
+      );
       if (response.ok) {
-        notifySuccess('Password has been reset successfully.');
+        notifySuccess("Password has been reset successfully.");
         setTimeout(() => {
-          navigate('/');
+          navigate("/");
         }, 2000);
       } else {
         const data = await response.json();
-        notifyError(data.message || 'Failed to set new password');
+        notifyError(data.message || "Failed to set new password");
       }
     } catch (error: any) {
-      notifyError(error.message || 'An error occurred during the password reset process');
+      notifyError(
+        error.message || "An error occurred during the password reset process"
+      );
     }
   };
 
   return (
     <div className="max-w-md mx-auto w-full space-y-8 p-6 sm:p-8">
       <div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">Set New Password</h2>
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+          Set New Password
+        </h2>
       </div>
       <form className="mt-8 space-y-6" onSubmit={handleSetNewPassword}>
         <div className="rounded-md shadow-sm -space-y-px">

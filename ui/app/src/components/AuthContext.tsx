@@ -1,6 +1,12 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
-type UserRole = 'event_manager' | 'dj' | 'administrator' | null;
+type UserRole = "event_manager" | "dj" | "administrator" | null;
 
 interface User {
   user_id: string;
@@ -12,7 +18,7 @@ interface User {
 }
 
 interface SessionData {
-  status: 'error' | 'success';
+  status: "error" | "success";
   message?: string;
   data?: {
     expires: number;
@@ -30,17 +36,19 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  
+
   const initializeAuth = async () => {
     const response = await fetch(`http://localhost/api/auth/session`, {
-      credentials: 'include',
+      credentials: "include",
     });
     const sessionData: SessionData = await response.json();
-    if (sessionData.status === 'success' && sessionData.data?.user.role) {
+    if (sessionData.status === "success" && sessionData.data?.user.role) {
       setIsAuthenticated(true);
       setRole(sessionData.data.user.role);
       setUser(sessionData.data.user);
@@ -55,25 +63,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (username: string, password: string) => {
     const response = await fetch(`http://localhost/api/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ username, password }),
     });
     if (response.ok) {
       initializeAuth();
     } else {
-      throw new Error('Login failed');
+      throw new Error("Login failed");
     }
   };
 
   const logout = async () => {
     try {
-      const response = await fetch('http://localhost/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
+      const response = await fetch("http://localhost/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
@@ -82,15 +90,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setRole(null);
         setUser(null);
       } else {
-        console.error('Logout failed');
+        console.error("Logout failed");
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, role, isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, role, isAuthenticated, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -99,7 +109,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

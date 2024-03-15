@@ -1,11 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { CalendarDaysIcon } from '@heroicons/react/24/outline';
-import Navigation from './Navigation';
-import { useAuth } from './AuthContext';
-import { useNotifier } from './useNotifier';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { CalendarDaysIcon } from "@heroicons/react/24/outline";
+import Navigation from "./Navigation";
+import { useAuth } from "./AuthContext";
+import { useNotifier } from "./useNotifier";
 
-const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -42,20 +55,20 @@ const EventDetail: React.FC = () => {
       if (!eventId) return;
       try {
         const response = await fetch(`http://localhost/api/events/${eventId}`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
         });
         const data = await response.json();
-        if (data.status === 'success' && data.data.length > 0) {
+        if (data.status === "success" && data.data.length > 0) {
           setEvent(data.data[0]);
         } else {
-          console.error('Failed to fetch event details:', data.message);
-          notifyError('Failed to fetch event details.');
+          console.error("Failed to fetch event details:", data.message);
+          notifyError("Failed to fetch event details.");
         }
       } catch (error) {
-        console.error('An error occurred while fetching event details:', error);
-        notifyError('An error occurred while fetching event details.');
+        console.error("An error occurred while fetching event details:", error);
+        notifyError("An error occurred while fetching event details.");
       }
     };
 
@@ -67,10 +80,10 @@ const EventDetail: React.FC = () => {
     if (!user || !eventId) return;
 
     try {
-      const response = await fetch('http://localhost/api/bookings/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+      const response = await fetch("http://localhost/api/bookings/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           event_id: eventId,
           dj_id: user.user_id,
@@ -79,14 +92,14 @@ const EventDetail: React.FC = () => {
       });
 
       if (response.ok) {
-        notifySuccess('Booking request sent successfully!');
-        navigate('/dashboard');
+        notifySuccess("Booking request sent successfully!");
+        navigate("/dashboard");
       } else {
-        notifyError('Failed to send booking request.');
+        notifyError("Failed to send booking request.");
       }
     } catch (error) {
-      console.error('Error sending booking request:', error);
-      notifyError('An error occurred while sending the booking request.');
+      console.error("Error sending booking request:", error);
+      notifyError("An error occurred while sending the booking request.");
     }
   };
 
@@ -97,7 +110,10 @@ const EventDetail: React.FC = () => {
       <Navigation />
       <div className="py-12 px-4 sm:px-6 lg:py-16 lg:px-8 rounded-lg shadow-md text-white">
         <div className="text-center mb-8">
-          <CalendarDaysIcon className="mx-auto h-10 w-10 text-indigo-400" aria-hidden="true" />
+          <CalendarDaysIcon
+            className="mx-auto h-10 w-10 text-indigo-400"
+            aria-hidden="true"
+          />
           <h2 className="mt-2 text-3xl leading-8 font-extrabold tracking-tight sm:text-4xl">
             {event.name}
           </h2>
@@ -107,8 +123,11 @@ const EventDetail: React.FC = () => {
         </div>
         <p className="text-md text-center mb-4">Location: {event.location}</p>
         <p className="text-md text-center mb-4">{event.description}</p>
-        {user && user.role === 'dj' && (
-          <form onSubmit={handleBookingSubmit} className="mt-8 max-w-md mx-auto">
+        {user && user.role === "dj" && (
+          <form
+            onSubmit={handleBookingSubmit}
+            className="mt-8 max-w-md mx-auto"
+          >
             <div className="flex flex-col items-center justify-center">
               <button
                 type="submit"

@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../AuthContext';
-import { useNotifier } from '../useNotifier';
-import Navigation from '../Navigation';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
+import { useNotifier } from "../useNotifier";
+import Navigation from "../Navigation";
 
 const EditProfile: React.FC = () => {
   const { role, isAuthenticated } = useAuth();
   const { notifyError, notifySuccess } = useNotifier();
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [userId, setUserId] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [userId, setUserId] = useState("");
   const [dataFetched, setDataFetched] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuthenticated && !dataFetched) {
       fetch(`http://localhost/api/auth/session`, {
-        credentials: 'include',
+        credentials: "include",
       })
         .then((res) => res.json())
         .then((data) => {
-          if (data.status === 'success') {
+          if (data.status === "success") {
             const user = data.data.user;
             setUsername(user.username);
             setEmail(user.email);
@@ -30,8 +30,8 @@ const EditProfile: React.FC = () => {
           }
         })
         .catch((error) => {
-          console.error('Failed to fetch user data', error);
-          notifyError('Failed to load profile data.');
+          console.error("Failed to fetch user data", error);
+          notifyError("Failed to load profile data.");
         });
     }
   }, [isAuthenticated, dataFetched, notifyError]);
@@ -44,19 +44,21 @@ const EditProfile: React.FC = () => {
     e.preventDefault();
     try {
       const response = await fetch(`http://localhost/api/users/${userId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ username, email, password, role }),
       });
       if (response.ok) {
-        notifySuccess('Profile updated successfully.');
-        navigate('/');
+        notifySuccess("Profile updated successfully.");
+        navigate("/");
       } else {
-        throw new Error('Failed to update profile.');
+        throw new Error("Failed to update profile.");
       }
     } catch (error: any) {
-      notifyError(error.message || 'An error occurred during the profile update.');
+      notifyError(
+        error.message || "An error occurred during the profile update."
+      );
     }
   };
 
@@ -65,7 +67,9 @@ const EditProfile: React.FC = () => {
       <Navigation />
       <div className="max-w-md mx-auto w-full space-y-8 p-6 sm:p-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-white">Edit Your Profile</h2>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+            Edit Your Profile
+          </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
