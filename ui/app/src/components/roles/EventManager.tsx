@@ -20,7 +20,7 @@ const EventManager: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { notifyError } = useNotifier();
+  const { notifyError, notifySuccess } = useNotifier();
 
   const fetchEvents = async () => {
     try {
@@ -33,7 +33,7 @@ const EventManager: React.FC = () => {
         if(result.status === 'success' && Array.isArray(result.data)) {
           setEvents(result.data);
         } else {
-          throw new Error('Unexpected response structure');
+          return;
         }
       } else {
         throw new Error('Failed to fetch events');
@@ -52,7 +52,7 @@ const EventManager: React.FC = () => {
       });
       if (response.ok) {
         setEvents(currentEvents => currentEvents.filter(event => event.event_id !== eventId));
-        notifyError('Event deleted successfully');
+        notifySuccess('Event deleted successfully');
       } else {
         throw new Error('Failed to delete event');
       }
@@ -106,10 +106,10 @@ const EventManager: React.FC = () => {
               </div>
             </div>
           ))}
-          {events.length === 0 && (
-            <p className="text-white">No events found. Start by creating a new event.</p>
-          )}
         </div>
+        {events.length === 0 && (
+            <p className="mt-5 text-center text-lg text-gray-500">No events found. Start by creating a new event.</p>
+        )}
       </div>
     </div>
   );

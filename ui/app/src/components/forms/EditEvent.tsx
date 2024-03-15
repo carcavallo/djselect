@@ -58,6 +58,10 @@ const EditEvent: React.FC = () => {
     }));
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
@@ -89,7 +93,7 @@ const EditEvent: React.FC = () => {
                 name="name"
                 type="text"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Event Name"
                 value={eventDetails.name}
                 onChange={handleChange}
@@ -98,7 +102,7 @@ const EditEvent: React.FC = () => {
                 name="location"
                 type="text"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Location"
                 value={eventDetails.location}
                 onChange={handleChange}
@@ -107,7 +111,7 @@ const EditEvent: React.FC = () => {
                 name="event_date"
                 type="date"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Event Date"
                 value={eventDetails.event_date}
                 onChange={handleChange}
@@ -116,7 +120,7 @@ const EditEvent: React.FC = () => {
                 name="event_time"
                 type="time"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Event Time"
                 value={eventDetails.event_time}
                 onChange={handleChange}
@@ -124,7 +128,7 @@ const EditEvent: React.FC = () => {
                 <textarea
                 name="description"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Description"
                 value={eventDetails.description}
                 onChange={handleChange}
@@ -137,6 +141,11 @@ const EditEvent: React.FC = () => {
                 Update Event
                 </button>
             </form>
+            <div className="mt-2 text-center text-sm text-gray-600">
+              <button onClick={handleBack} className="font-medium text-indigo-600 hover:text-indigo-500">
+                Back
+              </button>
+            </div>
         </div>
     </>
   );

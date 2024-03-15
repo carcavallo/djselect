@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Login from './forms/Login';
 import Register from './forms/Register';
 import PasswordResetRequest from './forms/PasswordResetRequest';
@@ -15,12 +15,13 @@ const Authentication: React.FC = () => {
   const [currentForm, setCurrentForm] = useState<string>(FORM_TYPES.LOGIN);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !location.pathname.startsWith('/dashboard')) {
       navigate('/dashboard');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, location.pathname]);
 
   const toggleForm = () => {
     setCurrentForm(currentForm === FORM_TYPES.LOGIN ? FORM_TYPES.REGISTER : FORM_TYPES.LOGIN);

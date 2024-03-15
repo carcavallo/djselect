@@ -61,7 +61,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       body: JSON.stringify({ username, password }),
     });
     if (response.ok) {
-      // Re-initialize to fetch user info upon successful login
       initializeAuth();
     } else {
       throw new Error('Login failed');
@@ -81,7 +80,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (response.ok) {
         setIsAuthenticated(false);
         setRole(null);
-        setUser(null); // Clear user information upon logout
+        setUser(null);
       } else {
         console.error('Logout failed');
       }
