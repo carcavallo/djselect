@@ -173,7 +173,7 @@ const EventBookings: React.FC = () => {
           ) : (
             <p className="mt-5 text-center text-lg text-gray-500">No booking requests found for this event.</p>
           )
-        )}
+          }
       </div>
       <div className="mt-2 text-center text-sm text-gray-600">
         <button onClick={handleBack} className="font-medium text-indigo-600 hover:text-indigo-500">

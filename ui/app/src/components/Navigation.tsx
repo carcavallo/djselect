@@ -27,7 +27,6 @@ export default function Navigation() {
   const handleLogout = useCallback(async () => {
     try {
       await logout();
-<<<<<<< HEAD
       navigate('/');
     } catch (error) {
       console.error('Logout failed', error);
@@ -38,13 +37,6 @@ export default function Navigation() {
     navigate(path);
   };
 
-=======
-      navigate("/");
-    } catch (error) {
-      console.error("Logout failed", error);
-    }
-  }, [logout, navigate]);
->>>>>>> db9b70d5a3bf0999b7913e1d24a88e2b3ced00ad
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -84,18 +76,8 @@ export default function Navigation() {
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <Menu as="div" className="relative ml-3">
                   <div>
-<<<<<<< HEAD
                     <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <UserCircleIcon className="block h-8 w-8 text-white" aria-hidden="true" />
-=======
-                    <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                      <span className="absolute -inset-1.5" />
-                      <span className="sr-only">Open user menu</span>
-                      <UserCircleIcon
-                        className="block h-8 w-8 text-white"
-                        aria-hidden="true"
-                      />
->>>>>>> db9b70d5a3bf0999b7913e1d24a88e2b3ced00ad
                     </Menu.Button>
                   </div>
                   <Transition
@@ -110,38 +92,19 @@ export default function Navigation() {
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <Menu.Item>
                         {({ active }) => (
-<<<<<<< HEAD
                           <button
                             onClick={() => handleNavigate("/profile")}
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                           >
                             Edit Profile
                           </button>
-=======
-                          <a
-                            href="/profile"
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Edit Profile
-                          </a>
->>>>>>> db9b70d5a3bf0999b7913e1d24a88e2b3ced00ad
                         )}
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
                           <button
                             onClick={handleLogout}
-<<<<<<< HEAD
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-=======
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
->>>>>>> db9b70d5a3bf0999b7913e1d24a88e2b3ced00ad
                           >
                             Sign out
                           </button>

@@ -1,18 +1,9 @@
-<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Login from './forms/Login';
 import Register from './forms/Register';
 import PasswordResetRequest from './forms/PasswordResetRequest';
 import { useAuth } from './AuthContext';
-=======
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Login from "./forms/Login";
-import Register from "./forms/Register";
-import PasswordResetRequest from "./forms/PasswordResetRequest";
-import { useAuth } from "./AuthContext";
->>>>>>> db9b70d5a3bf0999b7913e1d24a88e2b3ced00ad
 
 const FORM_TYPES = {
   LOGIN: "login",
@@ -27,13 +18,8 @@ const Authentication: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-<<<<<<< HEAD
     if (isAuthenticated && !location.pathname.startsWith('/dashboard')) {
       navigate('/dashboard');
-=======
-    if (isAuthenticated) {
-      navigate("/dashboard");
->>>>>>> db9b70d5a3bf0999b7913e1d24a88e2b3ced00ad
     }
   }, [isAuthenticated, navigate, location.pathname]);
 

@@ -40,11 +40,7 @@ const EventManager: React.FC = () => {
         if (result.status === "success" && Array.isArray(result.data)) {
           setEvents(result.data);
         } else {
-<<<<<<< HEAD
           return;
-=======
-          throw new Error("Unexpected response structure");
->>>>>>> db9b70d5a3bf0999b7913e1d24a88e2b3ced00ad
         }
       } else {
         throw new Error("Failed to fetch events");
@@ -62,15 +58,8 @@ const EventManager: React.FC = () => {
         headers: { "Content-Type": "application/json" },
       });
       if (response.ok) {
-<<<<<<< HEAD
         setEvents(currentEvents => currentEvents.filter(event => event.event_id !== eventId));
         notifySuccess('Event deleted successfully');
-=======
-        setEvents((currentEvents) =>
-          currentEvents.filter((event) => event.event_id !== eventId)
-        );
-        notifyError("Event deleted successfully");
->>>>>>> db9b70d5a3bf0999b7913e1d24a88e2b3ced00ad
       } else {
         throw new Error("Failed to delete event");
       }
@@ -133,14 +122,6 @@ const EventManager: React.FC = () => {
               </div>
             </div>
           ))}
-<<<<<<< HEAD
-=======
-          {events.length === 0 && (
-            <p className="text-white">
-              No events found. Start by creating a new event.
-            </p>
-          )}
->>>>>>> db9b70d5a3bf0999b7913e1d24a88e2b3ced00ad
         </div>
         {events.length === 0 && (
             <p className="mt-5 text-center text-lg text-gray-500">No events found. Start by creating a new event.</p>
