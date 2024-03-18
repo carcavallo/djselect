@@ -30,7 +30,9 @@ const SetNewPassword: React.FC = () => {
         navigate("/");
       }, 2000);
     } catch (error: any) {
-      notifyError(error.message || "An error occurred during the password reset process");
+      notifyError(
+        error.message || "An error occurred during the password reset process"
+      );
     }
   };
 

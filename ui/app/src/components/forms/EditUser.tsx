@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useNotifier } from "../helpers/useNotifier";
-import { fetchUserById, updateUserProfile } from '../helpers/apiService';
+import { fetchUserById, updateUserProfile } from "../helpers/apiService";
 
 interface UserProfile {
   username: string;
@@ -36,7 +36,9 @@ const EditUser: React.FC = () => {
     fetchUserDetails();
   }, [userId]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
   };
 
@@ -45,7 +47,9 @@ const EditUser: React.FC = () => {
     try {
       await updateUserProfile(userDetails.user_id, {
         ...userDetails,
-        password: userDetails.password?.trim() ? userDetails.password : undefined,
+        password: userDetails.password?.trim()
+          ? userDetails.password
+          : undefined,
       });
       notifySuccess("User updated successfully.");
       navigate("/dashboard");
@@ -56,7 +60,9 @@ const EditUser: React.FC = () => {
 
   return (
     <div className="max-w-md mx-auto w-full space-y-8 p-6 sm:p-8">
-      <h2 className="mt-6 text-center text-3xl font-extrabold text-white">Edit User</h2>
+      <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+        Edit User
+      </h2>
       <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="username" className="sr-only">
@@ -126,12 +132,15 @@ const EditUser: React.FC = () => {
         </button>
       </form>
       <div className="mt-2 text-center text-sm text-gray-600">
-        <button onClick={() => navigate(-1)} className="font-medium text-indigo-600 hover:text-indigo-500">
+        <button
+          onClick={() => navigate(-1)}
+          className="font-medium text-indigo-600 hover:text-indigo-500"
+        >
           Back
         </button>
       </div>
     </div>
-  );  
+  );
 };
 
 export default EditUser;

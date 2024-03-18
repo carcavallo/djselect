@@ -6,16 +6,22 @@ const PasswordResetRequest: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const { notifyError, notifySuccess } = useNotifier();
 
-  const handlePasswordResetRequest = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handlePasswordResetRequest = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
     try {
       await requestPasswordReset(email);
-      notifySuccess("If the email is registered, you will receive a password reset link.");
+      notifySuccess(
+        "If the email is registered, you will receive a password reset link."
+      );
       setTimeout(() => {
         window.location.href = "/";
       }, 4000);
     } catch (error: any) {
-      notifyError(error.message || "An error occurred during the password reset request");
+      notifyError(
+        error.message || "An error occurred during the password reset request"
+      );
     }
   };
 

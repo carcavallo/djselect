@@ -27,9 +27,9 @@ export default function Navigation() {
   const handleLogout = useCallback(async () => {
     try {
       await logout();
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.error('Logout failed', error);
+      console.error("Logout failed", error);
     }
   }, [logout, navigate]);
 
@@ -68,7 +68,10 @@ export default function Navigation() {
                 <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                      <UserCircleIcon className="block h-8 w-8 text-white" aria-hidden="true" />
+                      <UserCircleIcon
+                        className="block h-8 w-8 text-white"
+                        aria-hidden="true"
+                      />
                     </Menu.Button>
                   </div>
                   <Transition
@@ -85,7 +88,10 @@ export default function Navigation() {
                         {({ active }) => (
                           <button
                             onClick={() => handleNavigate("/profile")}
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
                           >
                             Edit Profile
                           </button>
@@ -95,7 +101,10 @@ export default function Navigation() {
                         {({ active }) => (
                           <button
                             onClick={handleLogout}
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
                           >
                             Sign out
                           </button>

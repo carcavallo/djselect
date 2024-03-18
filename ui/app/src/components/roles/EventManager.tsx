@@ -7,11 +7,21 @@ import {
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../authentication/AuthContext";
 import { useNotifier } from "../helpers/useNotifier";
-import { fetchUserEvents, deleteEvent } from '../helpers/apiService';
+import { fetchUserEvents, deleteEvent } from "../helpers/apiService";
 
 const months = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 interface Event {
@@ -48,19 +58,24 @@ const EventManager: React.FC = () => {
           }
         })
         .catch((error: any) => {
-          notifyError(error.message || "An error occurred while fetching events");
+          notifyError(
+            error.message || "An error occurred while fetching events"
+          );
         });
     }
   }, [user?.user_id]);
-  
 
   const handleDeleteEvent = async (eventId: string) => {
     try {
       await deleteEvent(eventId);
-      setEvents(currentEvents => currentEvents.filter(event => event.event_id !== eventId));
-      notifySuccess('Event deleted successfully');
+      setEvents((currentEvents) =>
+        currentEvents.filter((event) => event.event_id !== eventId)
+      );
+      notifySuccess("Event deleted successfully");
     } catch (error: any) {
-      notifyError(error.message || "An error occurred while deleting the event");
+      notifyError(
+        error.message || "An error occurred while deleting the event"
+      );
     }
   };
 
@@ -81,42 +96,47 @@ const EventManager: React.FC = () => {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events && events.map((event) => (
-            <div
-              key={event.event_id}
-              className="bg-white rounded-lg shadow p-4"
-            >
-              <div className="flex flex-col">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  {event.name}
-                </h3>
-                <p className="text-sm text-gray-500">{event.location}</p>
-                <p className="text-sm text-gray-500 mb-2">{formatDate(event.start_datetime)}</p>
-                <div className="flex items-center space-x-2">
-                  <PencilSquareIcon
-                    className="h-6 w-6 text-gray-400 cursor-pointer"
-                    onClick={() => navigate(`/edit-event/${event.event_id}`)}
-                    aria-hidden="true"
-                  />
-                  <ClipboardDocumentCheckIcon
-                    className="h-6 w-6 text-gray-400 cursor-pointer"
-                    onClick={() =>
-                      navigate(`/event-requests/${event.event_id}`)
-                    }
-                    aria-hidden="true"
-                  />
-                  <TrashIcon
-                    className="h-6 w-6 text-gray-400 cursor-pointer"
-                    onClick={() => handleDeleteEvent(event.event_id)}
-                    aria-hidden="true"
-                  />
+          {events &&
+            events.map((event) => (
+              <div
+                key={event.event_id}
+                className="bg-white rounded-lg shadow p-4"
+              >
+                <div className="flex flex-col">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    {event.name}
+                  </h3>
+                  <p className="text-sm text-gray-500">{event.location}</p>
+                  <p className="text-sm text-gray-500 mb-2">
+                    {formatDate(event.start_datetime)}
+                  </p>
+                  <div className="flex items-center space-x-2">
+                    <PencilSquareIcon
+                      className="h-6 w-6 text-gray-400 cursor-pointer"
+                      onClick={() => navigate(`/edit-event/${event.event_id}`)}
+                      aria-hidden="true"
+                    />
+                    <ClipboardDocumentCheckIcon
+                      className="h-6 w-6 text-gray-400 cursor-pointer"
+                      onClick={() =>
+                        navigate(`/event-requests/${event.event_id}`)
+                      }
+                      aria-hidden="true"
+                    />
+                    <TrashIcon
+                      className="h-6 w-6 text-gray-400 cursor-pointer"
+                      onClick={() => handleDeleteEvent(event.event_id)}
+                      aria-hidden="true"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
         {!events && (
-            <p className="mt-5 text-center text-lg text-gray-500">No events found. Start by creating a new event.</p>
+          <p className="mt-5 text-center text-lg text-gray-500">
+            No events found. Start by creating a new event.
+          </p>
         )}
       </div>
     </div>

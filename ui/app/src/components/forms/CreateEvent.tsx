@@ -3,7 +3,7 @@ import { useAuth } from "../authentication/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useNotifier } from "../helpers/useNotifier";
 import Navigation from "../Navigation";
-import { createEvent } from '../helpers/apiService';
+import { createEvent } from "../helpers/apiService";
 
 const CreateEvent: React.FC = () => {
   const { user } = useAuth();
@@ -25,7 +25,11 @@ const CreateEvent: React.FC = () => {
     const day = now.getDate();
     const hours = now.getHours();
     const minutes = now.getMinutes();
-    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    return `${year}-${month.toString().padStart(2, "0")}-${day
+      .toString()
+      .padStart(2, "0")}T${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   const handleChange = (
@@ -41,8 +45,13 @@ const CreateEvent: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (new Date(eventDetails.end_datetime) <= new Date(eventDetails.start_datetime)) {
-      notifyError("The end date and time must be after the start date and time.");
+    if (
+      new Date(eventDetails.end_datetime) <=
+      new Date(eventDetails.start_datetime)
+    ) {
+      notifyError(
+        "The end date and time must be after the start date and time."
+      );
       return;
     }
 
@@ -59,9 +68,11 @@ const CreateEvent: React.FC = () => {
     <>
       <Navigation />
       <div className="max-w-md mx-auto w-full space-y-8 p-6 sm:p-8">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">Create Event</h2>
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+          Create Event
+        </h2>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            <input
+          <input
             name="name"
             type="text"
             required
@@ -69,8 +80,8 @@ const CreateEvent: React.FC = () => {
             placeholder="Event Name"
             value={eventDetails.name}
             onChange={handleChange}
-            />
-            <input
+          />
+          <input
             name="location"
             type="text"
             required
@@ -78,8 +89,8 @@ const CreateEvent: React.FC = () => {
             placeholder="Location"
             value={eventDetails.location}
             onChange={handleChange}
-            />
-            <input
+          />
+          <input
             name="start_datetime"
             type="datetime-local"
             required
@@ -87,8 +98,8 @@ const CreateEvent: React.FC = () => {
             min={getMinDateTime()}
             value={eventDetails.start_datetime}
             onChange={handleChange}
-            />
-            <input
+          />
+          <input
             name="end_datetime"
             type="datetime-local"
             required
@@ -96,25 +107,30 @@ const CreateEvent: React.FC = () => {
             min={getMinDateTime()}
             value={eventDetails.end_datetime}
             onChange={handleChange}
-            />
-            <textarea
+          />
+          <textarea
             name="description"
             required
             className="appearance-none rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
             placeholder="Description"
             value={eventDetails.description}
-            onChange={(e) => setEventDetails({...eventDetails, description: e.target.value})}
+            onChange={(e) =>
+              setEventDetails({ ...eventDetails, description: e.target.value })
+            }
             rows={4}
-            ></textarea>
-            <button
+          ></textarea>
+          <button
             type="submit"
             className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
+          >
             Create Event
-            </button>
+          </button>
         </form>
         <div className="mt-2 text-center text-sm text-gray-600">
-          <button onClick={handleBack} className="font-medium text-indigo-600 hover:text-indigo-500">
+          <button
+            onClick={handleBack}
+            className="font-medium text-indigo-600 hover:text-indigo-500"
+          >
             Back
           </button>
         </div>

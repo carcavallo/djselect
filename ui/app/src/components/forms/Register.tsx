@@ -14,7 +14,6 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
   const [password, setPassword] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [role, setRole] = useState<string>("dj");
-  
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

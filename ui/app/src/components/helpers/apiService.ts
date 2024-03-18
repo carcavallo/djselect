@@ -28,7 +28,7 @@ interface EventUpdateDetails {
 interface BookingRequestParams {
   eventId: string;
   djId: string;
-  status?: 'pending' | 'confirmed' | 'cancelled';
+  status?: "pending" | "confirmed" | "cancelled";
 }
 
 interface UserProfile {
@@ -51,7 +51,7 @@ interface ResetPasswordParams {
   password: string;
 }
 
-export const loginUser = async (username :string, password :string) => {
+export const loginUser = async (username: string, password: string) => {
   const response = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -148,7 +148,7 @@ export const fetchEvents = async () => {
   }
 };
 
-export const fetchBookings = async (djId :string) => {
+export const fetchBookings = async (djId: string) => {
   try {
     const response = await fetch(`${BASE_URL}/bookings/${djId}`, {
       method: "GET",
@@ -162,7 +162,7 @@ export const fetchBookings = async (djId :string) => {
   }
 };
 
-export const cancelBooking = async (bookingId :string) => {
+export const cancelBooking = async (bookingId: string) => {
   try {
     const response = await fetch(`${BASE_URL}/bookings/${bookingId}`, {
       method: "PUT",
@@ -179,7 +179,7 @@ export const cancelBooking = async (bookingId :string) => {
   }
 };
 
-export const fetchUserEvents = async (userId :string) => {
+export const fetchUserEvents = async (userId: string) => {
   try {
     const response = await fetch(`${BASE_URL}/usevents/${userId}`, {
       method: "GET",
@@ -195,7 +195,7 @@ export const fetchUserEvents = async (userId :string) => {
   }
 };
 
-export const deleteEvent = async (eventId :string) => {
+export const deleteEvent = async (eventId: string) => {
   try {
     const response = await fetch(`${BASE_URL}/events/${eventId}`, {
       method: "DELETE",
@@ -246,7 +246,10 @@ export const fetchEventDetails = async (eventId: string) => {
   }
 };
 
-export const updateEvent = async (eventId: string, eventDetails: EventUpdateDetails) => {
+export const updateEvent = async (
+  eventId: string,
+  eventDetails: EventUpdateDetails
+) => {
   try {
     const response = await fetch(`${BASE_URL}/events/${eventId}`, {
       method: "PUT",
@@ -328,7 +331,10 @@ export const deleteUser = async (userId: string): Promise<void> => {
   }
 };
 
-export const updateUserProfile = async (userId: string, profileData: UserProfile): Promise<void> => {
+export const updateUserProfile = async (
+  userId: string,
+  profileData: UserProfile
+): Promise<void> => {
   const response = await fetch(`${BASE_URL}/users/${userId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -340,7 +346,9 @@ export const updateUserProfile = async (userId: string, profileData: UserProfile
   }
 };
 
-export const fetchBookingsForEvent = async (eventId: string): Promise<Booking[]> => {
+export const fetchBookingsForEvent = async (
+  eventId: string
+): Promise<Booking[]> => {
   try {
     const response = await fetch(`${BASE_URL}/boevents/${eventId}`, {
       method: "GET",
@@ -354,7 +362,10 @@ export const fetchBookingsForEvent = async (eventId: string): Promise<Booking[]>
   }
 };
 
-export const updateBookingStatus = async (bookingId: string, newStatus: 'confirmed' | 'cancelled'): Promise<void> => {
+export const updateBookingStatus = async (
+  bookingId: string,
+  newStatus: "confirmed" | "cancelled"
+): Promise<void> => {
   try {
     const response = await fetch(`${BASE_URL}/bookings/${bookingId}`, {
       method: "PUT",
@@ -362,7 +373,8 @@ export const updateBookingStatus = async (bookingId: string, newStatus: 'confirm
       credentials: "include",
       body: JSON.stringify({ status: newStatus }),
     });
-    if (!response.ok) throw new Error(`Failed to update booking status to ${newStatus}.`);
+    if (!response.ok)
+      throw new Error(`Failed to update booking status to ${newStatus}.`);
   } catch (error) {
     throw error;
   }
@@ -380,7 +392,9 @@ export const requestPasswordReset = async (email: string): Promise<void> => {
   }
 };
 
-export const registerUser = async (registerData: RegisterData): Promise<void> => {
+export const registerUser = async (
+  registerData: RegisterData
+): Promise<void> => {
   const response = await fetch(`${BASE_URL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

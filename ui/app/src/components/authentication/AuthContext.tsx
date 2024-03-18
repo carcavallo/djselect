@@ -5,7 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { loginUser, fetchSession, logoutUser } from '../helpers/apiService';
+import { loginUser, fetchSession, logoutUser } from "../helpers/apiService";
 
 type UserRole = "event_manager" | "dj" | "administrator" | null;
 
@@ -28,7 +28,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);

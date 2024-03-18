@@ -4,7 +4,7 @@ import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 import Navigation from "../Navigation";
 import { useAuth } from "../authentication/AuthContext";
 import { useNotifier } from "../helpers/useNotifier";
-import { fetchEventDetail, sendBookingRequest } from '../helpers/apiService'; 
+import { fetchEventDetail, sendBookingRequest } from "../helpers/apiService";
 
 const months = [
   "January",
@@ -23,8 +23,13 @@ const months = [
 
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
-  return `${date.getDate()}. ${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()} (${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')})`;
-};  
+  return `${date.getDate()}. ${date.toLocaleString("default", {
+    month: "long",
+  })} ${date.getFullYear()} (${date.getHours()}:${date
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")})`;
+};
 
 interface Event {
   event_id: string;
@@ -48,8 +53,8 @@ const EventDetail: React.FC = () => {
   useEffect(() => {
     if (eventId) {
       fetchEventDetail(eventId)
-        .then(event => setEvent(event))
-        .catch(error => notifyError(error.message));
+        .then((event) => setEvent(event))
+        .catch((error) => notifyError(error.message));
     }
   }, [eventId]);
 
@@ -57,16 +62,16 @@ const EventDetail: React.FC = () => {
     navigate(-1);
   };
 
-  const handleBookingSubmit = async (e :any) => {
+  const handleBookingSubmit = async (e: any) => {
     e.preventDefault();
     if (!user || !eventId) return;
-  
+
     sendBookingRequest({ eventId, djId: user.user_id })
       .then(() => {
         notifySuccess("Booking request sent successfully!");
         navigate("/dashboard");
       })
-      .catch(error => notifyError(error.message));
+      .catch((error) => notifyError(error.message));
   };
 
   if (!event) return <></>;
@@ -84,7 +89,8 @@ const EventDetail: React.FC = () => {
             {event.name}
           </h2>
           <p className="mt-4 max-w-2xl text-xl mx-auto">
-            {formatDate(event.start_datetime)} - {formatDate(event.end_datetime)}
+            {formatDate(event.start_datetime)} -{" "}
+            {formatDate(event.end_datetime)}
           </p>
         </div>
         <p className="text-md text-center mb-4">Location: {event.location}</p>
@@ -105,8 +111,11 @@ const EventDetail: React.FC = () => {
           </form>
         )}
         <div className="text-center text-sm text-gray-600">
-          <button onClick={handleBack} className="font-medium text-indigo-600 hover:text-indigo-500">
-              Back
+          <button
+            onClick={handleBack}
+            className="font-medium text-indigo-600 hover:text-indigo-500"
+          >
+            Back
           </button>
         </div>
       </div>

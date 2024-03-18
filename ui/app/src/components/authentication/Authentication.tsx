@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import Login from '../forms/Login';
-import Register from '../forms/Register';
-import PasswordResetRequest from '../forms/PasswordResetRequest';
-import { useAuth } from './AuthContext';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import Login from "../forms/Login";
+import Register from "../forms/Register";
+import PasswordResetRequest from "../forms/PasswordResetRequest";
+import { useAuth } from "./AuthContext";
 
 const FORM_TYPES = {
   LOGIN: "login",
@@ -18,8 +18,8 @@ const Authentication: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (isAuthenticated && !location.pathname.startsWith('/dashboard')) {
-      navigate('/dashboard');
+    if (isAuthenticated && !location.pathname.startsWith("/dashboard")) {
+      navigate("/dashboard");
     }
   }, [isAuthenticated, navigate, location.pathname]);
 
