@@ -5,6 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
+import { loginUser, fetchSession, logoutUser } from './apiService';
 
 type UserRole = "event_manager" | "dj" | "administrator" | null;
 
@@ -17,15 +18,6 @@ interface User {
   created_at: string;
 }
 
-interface SessionData {
-  status: "error" | "success";
-  message?: string;
-  data?: {
-    expires: number;
-    user: User;
-  };
-}
-
 interface AuthContextType {
   user: User | null;
   role: UserRole;
@@ -36,23 +28,23 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const initializeAuth = async () => {
-    const response = await fetch(`http://localhost/api/auth/session`, {
-      credentials: "include",
-    });
-    const sessionData: SessionData = await response.json();
-    if (sessionData.status === "success" && sessionData.data?.user.role) {
-      setIsAuthenticated(true);
-      setRole(sessionData.data.user.role);
-      setUser(sessionData.data.user);
-    } else {
+    try {
+      const sessionData = await fetchSession();
+      if (sessionData.status === "success" && sessionData.data?.user.role) {
+        setIsAuthenticated(true);
+        setRole(sessionData.data.user.role);
+        setUser(sessionData.data.user);
+      } else {
+        setIsAuthenticated(false);
+      }
+    } catch (error) {
+      console.error(error);
       setIsAuthenticated(false);
     }
   };
@@ -62,36 +54,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   const login = async (username: string, password: string) => {
-    const response = await fetch(`http://localhost/api/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ username, password }),
-    });
-    if (response.ok) {
-      initializeAuth();
-    } else {
-      throw new Error("Login failed");
+    try {
+      await loginUser(username, password);
+      await initializeAuth();
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
   };
 
   const logout = async () => {
     try {
-      const response = await fetch("http://localhost/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        setIsAuthenticated(false);
-        setRole(null);
-        setUser(null);
-      } else {
-        console.error("Logout failed");
-      }
+      await logoutUser();
+      setIsAuthenticated(false);
+      setRole(null);
+      setUser(null);
     } catch (error) {
       console.error("Logout error:", error);
     }

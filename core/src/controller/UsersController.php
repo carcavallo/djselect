@@ -46,8 +46,12 @@ class UsersController extends IOController
     {
         $user = $this->_getUser($userId);
 
-        $_POST["password"] = password_hash($_POST["password"], PASSWORD_DEFAULT);
-
+        if (isset($_POST["password"]) && !empty(trim($_POST["password"]))) {
+            $_POST["password"] = password_hash($_POST["password"], PASSWORD_DEFAULT);
+        } else {
+            unset($_POST["password"]);
+        }
+        
         foreach ($_POST as $key => $value) {
             if (property_exists($user, $key) && !in_array($key, ['user_id', 'created_at', 'updated_at'])) {
                 $user->$key = $value;

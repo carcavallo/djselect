@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useNotifier } from "../useNotifier";
+import { confirmResetPassword } from "../apiService";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -23,27 +24,13 @@ const SetNewPassword: React.FC = () => {
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:80/api/auth/reset/confirm`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token, password }),
-        }
-      );
-      if (response.ok) {
-        notifySuccess("Password has been reset successfully.");
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
-      } else {
-        const data = await response.json();
-        notifyError(data.message || "Failed to set new password");
-      }
+      await confirmResetPassword({ token: token!, password });
+      notifySuccess("Password has been reset successfully.");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     } catch (error: any) {
-      notifyError(
-        error.message || "An error occurred during the password reset process"
-      );
+      notifyError(error.message || "An error occurred during the password reset process");
     }
   };
 

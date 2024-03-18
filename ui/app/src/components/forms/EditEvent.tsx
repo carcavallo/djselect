@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "../AuthContext";
 import { useNotifier } from "../useNotifier";
 import Navigation from "../Navigation";
+import { fetchEventDetails, updateEvent } from '../apiService';
 
 const EditEvent: React.FC = () => {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { notifyError, notifySuccess } = useNotifier();
-  const [dataFetched, setDataFetched] = useState(false); // State to track if data has been fetched
+  const [dataFetched, setDataFetched] = useState(false);
   const [eventDetails, setEventDetails] = useState({
     organizer_id: "",
     name: "",
@@ -20,40 +19,20 @@ const EditEvent: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!dataFetched) {
-      // Fetch data only if it hasn't been fetched yet
-      const fetchEventDetails = async () => {
-        try {
-          const response = await fetch(
-            `http://localhost/api/events/${eventId}`,
-            {
-              method: "GET",
-              headers: { "Content-Type": "application/json" },
-            }
-          );
-          if (response.ok) {
-            const { data } = await response.json();
-            if (data && data.length > 0) {
-              setEventDetails({
-                ...data[0],
-                event_date: data[0].event_date.split("T")[0], // Assuming ISO format
-                event_time: data[0].event_time.slice(0, 5), // Assuming HH:MM:SS format
-              });
-              setDataFetched(true); // Mark data as fetched
-            } else {
-              throw new Error("Event not found.");
-            }
-          } else {
-            throw new Error("Failed to fetch event details.");
-          }
-        } catch (error: any) {
-          notifyError(
-            error.message || "An error occurred while fetching event details."
-          );
-        }
-      };
-
-      fetchEventDetails();
+    if (!dataFetched && eventId) {
+      fetchEventDetails(eventId)
+        .then(data => {
+          setEventDetails({
+            organizer_id: data.organizer_id,
+            name: data.name,
+            location: data.location,
+            event_date: data.event_date,
+            event_time: data.event_time,
+            description: data.description,
+          });
+          setDataFetched(true);
+        })
+        .catch((error: any) => notifyError(error.message || "An error occurred while fetching event details."));
     }
   }, [eventId, notifyError, dataFetched]);
 
@@ -72,21 +51,13 @@ const EditEvent: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    try {
-      const response = await fetch(`http://localhost/api/events/${eventId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(eventDetails),
-      });
-      if (response.ok) {
-        notifySuccess("Event updated successfully.");
-        navigate("/dashboard"); // Adjust the navigation as needed
-      } else {
-        throw new Error("Failed to update event.");
-      }
-    } catch (error: any) {
-      notifyError(error.message || "An error occurred during event update.");
+    if (eventId) {
+      updateEvent(eventId, eventDetails)
+        .then(() => {
+          notifySuccess("Event updated successfully.");
+          navigate("/dashboard");
+        })
+        .catch((error: any) => notifyError(error.message || "An error occurred during event update."));
     }
   };
 
@@ -96,7 +67,6 @@ const EditEvent: React.FC = () => {
         <div className="max-w-md mx-auto w-full space-y-8 p-6 sm:p-8">
             <h2 className="mt-6 text-center text-3xl font-extrabold text-white">Edit Event</h2>
             <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                {/* Form fields */}
                 <input
                 name="name"
                 type="text"

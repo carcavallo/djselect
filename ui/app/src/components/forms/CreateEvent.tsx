@@ -3,6 +3,7 @@ import { useAuth } from "../AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useNotifier } from "../useNotifier";
 import Navigation from "../Navigation";
+import { createEvent } from '../apiService';
 
 const CreateEvent: React.FC = () => {
   const { user } = useAuth();
@@ -31,25 +32,9 @@ const CreateEvent: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`http://localhost/api/events`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(eventDetails),
-      });
-      if (response.ok) {
-        notifySuccess("Event created successfully.");
-        setEventDetails({
-          organizer_id: user?.user_id || "",
-          name: "",
-          location: "",
-          event_date: "",
-          event_time: "",
-          description: "",
-        });
-        navigate("/dashboard");
-      } else {
-        throw new Error("Failed to create event.");
-      }
+      await createEvent(eventDetails);
+      notifySuccess("Event created successfully.");
+      navigate("/dashboard");
     } catch (error: any) {
       notifyError(error.message || "An error occurred during event creation.");
     }

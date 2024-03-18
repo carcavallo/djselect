@@ -5,7 +5,10 @@ namespace controller;
 use Exception;
 use lib\DataRepo\DataRepo;
 use model\Event;
+use model\Booking;
 use trait\getter;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception as MailerException;
 use function util\removeArrayKeys;
 use function util\removeArrayValues;
 
@@ -108,20 +111,71 @@ class EventsController extends IOController
 
     /**
      * Deletes an event based on the provided event ID.
-     * Checks if the event exists before attempting deletion. If the event is found, it is deleted, and a success response is returned.
-     * If the event does not exist, an error message is returned.
-     * @param string $eventId The unique identifier of the event to be deleted.
-     * @return void
-     * @throws Exception If there's an error during the database operation or if the event does not exist.
+     * Notifies DJs via email if the event has confirmed bookings before deletion.
      */
     public function deleteEvent(string $eventId): void
     {
         $event = $this->_getEvent($eventId);
-
+    
+        if (!$event) {
+            $this->sendResponse("error", "No event found", null, 404);
+            return;
+        }
+    
+        $confirmedBookings = DataRepo::of(Booking::class)->select(
+            where: ["event_id" => ["=" => $eventId], "status" => ["=" => "confirmed"]]
+        );
+    
+        foreach ($confirmedBookings as $booking) {
+            $dj = $this->_getUser($booking->dj_id);
+            if ($dj) {
+                $this->sendEmailNotification($dj->email, $event->name);
+            }
+        }
+    
+        $deleteBookingsResult = DataRepo::of(Booking::class)->delete(
+            where: ["event_id" => ["=" => $eventId]]
+        );
+    
+        if (!$deleteBookingsResult) {
+            $this->sendResponse("error", "Failed to delete associated bookings", null, 500);
+            return;
+        }
+    
         if (DataRepo::delete($event)) {
-            $this->sendResponse("success", "Event deleted successfully");
+            $this->sendResponse("success", "Event deleted successfully and emails sent to confiremd dj's");
         } else {
             $this->sendResponse("error", "Failed to delete event", null, 500);
+        }
+    }    
+
+    /**
+     * Sends an email notification to the DJ about the event cancellation.
+     */
+    protected function sendEmailNotification(string $email, string $eventName)
+    {
+        $mail = new PHPMailer(true);
+        try {
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host = $_ENV['EMAIL_HOST'];
+            $mail->SMTPAuth = true;
+            $mail->Username = $_ENV['EMAIL_USERNAME'];
+            $mail->Password = $_ENV['EMAIL_PASSWORD'];
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+            $mail->CharSet = 'UTF-8';
+
+            $mail->setFrom('alessiopirovino@gmail.com', 'DJSELECT');
+            $mail->addAddress($email);
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Event Cancellation Notification';
+            $mail->Body    = 'Dear DJ, the event "' . $eventName . '" has been cancelled.';
+
+            $mail->send();
+        } catch (MailerException $e) {
+            error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
         }
     }
 }

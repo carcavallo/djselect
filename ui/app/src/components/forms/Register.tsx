@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotifier } from "../useNotifier";
+import { registerUser } from "../apiService";
 
 interface RegisterProps {
   onToggle: () => void;
@@ -8,36 +9,26 @@ interface RegisterProps {
 
 const Register: React.FC<RegisterProps> = ({ onToggle }) => {
   const navigate = useNavigate();
+  const { error, notifyError, notifySuccess } = useNotifier();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [role, setRole] = useState<string>("dj");
-  const { error, notifyError, notifySuccess } = useNotifier();
+  
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:80/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ username, password, email, role }),
-      });
-      if (response.ok) {
-        notifySuccess("Registered successfully");
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 2000);
-      } else {
-        const data = await response.json();
-        notifyError(data.message || "Failed to register");
-      }
+      await registerUser({ username, password, email, role });
+      notifySuccess("Registered successfully");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 2000);
     } catch (error: any) {
       notifyError(error.message || "An error occurred during registration");
     }
   };
-
   return (
     <div className="max-w-md mx-auto w-full space-y-8 p-6 sm:p-8">
       <div>

@@ -7,6 +7,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../AuthContext";
 import { useNotifier } from "../useNotifier";
+import { fetchUserEvents, deleteEvent } from '../apiService';
 
 interface Event {
   event_id: string;
@@ -26,53 +27,32 @@ const EventManager: React.FC = () => {
   const { user } = useAuth();
   const { notifyError, notifySuccess } = useNotifier();
 
-  const fetchEvents = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost/api/usevents/${user?.user_id}`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      if (response.ok) {
-        const result = await response.json();
-        if (result.status === "success" && Array.isArray(result.data)) {
-          setEvents(result.data);
-        } else {
-          return;
-        }
-      } else {
-        throw new Error("Failed to fetch events");
-      }
-    } catch (error: any) {
-      notifyError(error.message || "An error occurred while fetching events");
-      setEvents([]);
-    }
-  };
-
-  const deleteEvent = async (eventId: string) => {
-    try {
-      const response = await fetch(`http://localhost/api/events/${eventId}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (response.ok) {
-        setEvents(currentEvents => currentEvents.filter(event => event.event_id !== eventId));
-        notifySuccess('Event deleted successfully');
-      } else {
-        throw new Error("Failed to delete event");
-      }
-    } catch (error: any) {
-      notifyError(
-        error.message || "An error occurred while deleting the event"
-      );
-    }
-  };
-
   useEffect(() => {
-    fetchEvents();
+    if (user?.user_id) {
+      fetchUserEvents(user.user_id)
+        .then((events) => {
+          if (events && events.length === 0) {
+            setEvents([]);
+          } else {
+            setEvents(events);
+          }
+        })
+        .catch((error: any) => {
+          notifyError(error.message || "An error occurred while fetching events");
+        });
+    }
   }, [user?.user_id]);
+  
+
+  const handleDeleteEvent = async (eventId: string) => {
+    try {
+      await deleteEvent(eventId);
+      setEvents(currentEvents => currentEvents.filter(event => event.event_id !== eventId));
+      notifySuccess('Event deleted successfully');
+    } catch (error: any) {
+      notifyError(error.message || "An error occurred while deleting the event");
+    }
+  };
 
   return (
     <div className="pt-16 sm:pt-16 min-h-screen">
@@ -91,7 +71,7 @@ const EventManager: React.FC = () => {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map((event) => (
+          {events && events.map((event) => (
             <div
               key={event.event_id}
               className="bg-white rounded-lg shadow p-4"
@@ -115,7 +95,7 @@ const EventManager: React.FC = () => {
                   />
                   <TrashIcon
                     className="h-6 w-6 text-gray-400 cursor-pointer"
-                    onClick={() => deleteEvent(event.event_id)}
+                    onClick={() => handleDeleteEvent(event.event_id)}
                     aria-hidden="true"
                   />
                 </div>
@@ -123,7 +103,7 @@ const EventManager: React.FC = () => {
             </div>
           ))}
         </div>
-        {events.length === 0 && (
+        {!events && (
             <p className="mt-5 text-center text-lg text-gray-500">No events found. Start by creating a new event.</p>
         )}
       </div>

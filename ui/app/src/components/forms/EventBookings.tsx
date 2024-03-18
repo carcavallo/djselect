@@ -3,68 +3,48 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useNotifier } from '../useNotifier';
 import { CheckIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import Navigation from '../Navigation';
+import { fetchBookingsForEvent, updateBookingStatus, fetchUserById } from '../apiService';
 
 interface Booking {
   booking_id: string;
   dj_id: string;
   status: string;
-}
-
-interface DJ {
-  user_id: string;
-  username: string;
-}
-
-interface BookingWithDJUsername extends Booking {
-  djUsername: string;
+  djUsername?: string;
 }
 
 const EventBookings: React.FC = () => {
   const { eventId } = useParams<{ eventId: string }>();
   const { notifyError, notifySuccess } = useNotifier();
-  const [bookings, setBookings] = useState<BookingWithDJUsername[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [hasConfirmedBooking, setHasConfirmedBooking] = useState(false);
 
   useEffect(() => {
-    const fetchDJUsername = async (dj_id: string): Promise<string> => {
-      const response = await fetch(`http://localhost/api/users/${dj_id}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
-      if (!response.ok) throw new Error("Failed to fetch DJ username");
-      const { data } = await response.json();
-      return data.username;
-    };
-
-    const fetchBookings = async () => {
+    const loadBookings = async () => {
+      if (!eventId) return;
       setLoading(true);
       try {
-        const bookingsResponse = await fetch(`http://localhost/api/boevents/${eventId}`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-        });
-        if (!bookingsResponse.ok) return;
-        const bookingsData = await bookingsResponse.json();
-        const bookingsWithUsernames = await Promise.all(
-          bookingsData.data.map(async (booking: Booking) => {
-            const djUsername = await fetchDJUsername(booking.dj_id);
-            return { ...booking, djUsername };
-          })
-        );
+        let bookingsData = await fetchBookingsForEvent(eventId);
+        setHasConfirmedBooking(bookingsData.some(booking => booking.status === 'confirmed'));
+        const bookingsWithUsernames = await Promise.all(bookingsData.map(async (booking) => {
+          try {
+            const userData = await fetchUserById(booking.dj_id);
+            return { ...booking, djUsername: userData.username };
+          } catch (error) {
+            console.error("Failed to fetch DJ username for booking", booking.booking_id);
+            return { ...booking, djUsername: "Unknown DJ" };
+          }
+        }));
         setBookings(bookingsWithUsernames);
       } catch (error: any) {
-        notifyError(
-          error.message || "An error occurred while fetching bookings"
-        );
+        notifyError(error.message || "An error occurred while fetching bookings");
       } finally {
         setLoading(false);
       }
     };
-
-    fetchBookings();
+  
+    loadBookings();
   }, [eventId]);
 
   const handleBack = () => {
@@ -73,12 +53,7 @@ const EventBookings: React.FC = () => {
 
   const handleStatusChange = async (bookingId: string, newStatus: 'confirmed' | 'cancelled') => {
     try {
-      await fetch(`http://localhost/api/bookings/${bookingId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ status: newStatus }),
-      });
+      await updateBookingStatus(bookingId, newStatus);
       notifySuccess(`Booking ${newStatus}`);
       setBookings(
         bookings.map((booking) =>
@@ -87,7 +62,10 @@ const EventBookings: React.FC = () => {
             : booking
         )
       );
-    } catch (error: any) {
+      if (newStatus === 'confirmed') {
+        setHasConfirmedBooking(true);
+      }
+    } catch (error) {
       notifyError(`Failed to ${newStatus} booking`);
     }
   };
@@ -104,7 +82,7 @@ const EventBookings: React.FC = () => {
           </div>
           {loading ? (
             <div>Loading...</div>
-          ) : bookings.length > 0 ? (
+          ) : bookings && bookings.length > 0 ? (
             <div className="flex flex-col mt-5">
               <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -130,7 +108,7 @@ const EventBookings: React.FC = () => {
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
-                        {bookings.map((booking) => (
+                        {bookings && bookings.map((booking) => (
                           <tr key={booking.booking_id}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {booking.djUsername}
@@ -139,6 +117,8 @@ const EventBookings: React.FC = () => {
                               {booking.status}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            {!hasConfirmedBooking && (
+                              <>
                               <button
                                 onClick={() =>
                                   handleStatusChange(
@@ -161,6 +141,8 @@ const EventBookings: React.FC = () => {
                               >
                                 <XCircleIcon className="h-5 w-5" />
                               </button>
+                              </>
+                            )}
                             </td>
                           </tr>
                         ))}

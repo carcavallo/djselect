@@ -4,6 +4,7 @@ import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 import Navigation from "./Navigation";
 import { useAuth } from "./AuthContext";
 import { useNotifier } from "./useNotifier";
+import { fetchEventDetail, sendBookingRequest } from './apiService'; 
 
 const months = [
   "January",
@@ -51,56 +52,27 @@ const EventDetail: React.FC = () => {
   const { notifyError, notifySuccess } = useNotifier();
 
   useEffect(() => {
-    const fetchEventDetail = async () => {
-      if (!eventId) return;
-      try {
-        const response = await fetch(`http://localhost/api/events/${eventId}`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        });
-        const data = await response.json();
-        if (data.status === "success" && data.data.length > 0) {
-          setEvent(data.data[0]);
-        } else {
-          console.error("Failed to fetch event details:", data.message);
-          notifyError("Failed to fetch event details.");
-        }
-      } catch (error) {
-        console.error("An error occurred while fetching event details:", error);
-        notifyError("An error occurred while fetching event details.");
-      }
-    };
+    if (eventId) {
+      fetchEventDetail(eventId)
+        .then(event => setEvent(event))
+        .catch(error => notifyError(error.message));
+    }
+  }, [eventId]);
 
-    fetchEventDetail();
-  }, [eventId, notifyError]);
+  const handleBack = () => {
+    navigate(-1);
+  };
 
-  const handleBookingSubmit = async (e: React.FormEvent) => {
+  const handleBookingSubmit = async (e :any) => {
     e.preventDefault();
     if (!user || !eventId) return;
-
-    try {
-      const response = await fetch("http://localhost/api/bookings/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          event_id: eventId,
-          dj_id: user.user_id,
-          status: "pending",
-        }),
-      });
-
-      if (response.ok) {
+  
+    sendBookingRequest({ eventId, djId: user.user_id })
+      .then(() => {
         notifySuccess("Booking request sent successfully!");
         navigate("/dashboard");
-      } else {
-        notifyError("Failed to send booking request.");
-      }
-    } catch (error) {
-      console.error("Error sending booking request:", error);
-      notifyError("An error occurred while sending the booking request.");
-    }
+      })
+      .catch(error => notifyError(error.message));
   };
 
   if (!event) return <></>;
@@ -128,7 +100,7 @@ const EventDetail: React.FC = () => {
             onSubmit={handleBookingSubmit}
             className="mt-8 max-w-md mx-auto"
           >
-            <div className="flex flex-col items-center justify-center">
+            <div className="flex flex-col items-center justify-center mb-4">
               <button
                 type="submit"
                 className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -138,6 +110,11 @@ const EventDetail: React.FC = () => {
             </div>
           </form>
         )}
+        <div className="text-center text-sm text-gray-600">
+          <button onClick={handleBack} className="font-medium text-indigo-600 hover:text-indigo-500">
+              Back
+          </button>
+        </div>
       </div>
     </>
   );
