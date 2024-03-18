@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchUsers, deleteUser as deleteUserApi } from '../apiService';
+import { fetchUsers, deleteUser as deleteUserApi } from '../helpers/apiService';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { useNotifier } from "../useNotifier";
+import { useNotifier } from "../helpers/useNotifier";
 
 const Administrator: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useNotifier } from "../useNotifier";
-import { requestPasswordReset } from "../apiService";
+import { useNotifier } from "../helpers/useNotifier";
+import { requestPasswordReset } from "../helpers/apiService";
 
 const PasswordResetRequest: React.FC = () => {
   const [email, setEmail] = useState<string>("");

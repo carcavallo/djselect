@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { useAuth } from "../AuthContext";
-import { useNotifier } from "../useNotifier";
-import { fetchEvents, fetchBookings, cancelBooking as cancelBookingService } from '../apiService';
+import { useAuth } from "../authentication/AuthContext";
+import { useNotifier } from "../helpers/useNotifier";
+import { fetchEvents, fetchBookings, cancelBooking as cancelBookingService } from '../helpers/apiService';
 
 const months = [
   "January", "February", "March", "April", "May", "June",
@@ -106,16 +106,16 @@ const DJ: React.FC = () => {
                 All Events
               </button>
               <button 
-                onClick={() => setFilter('confirmed')} 
-                className={`btn ${filter === 'confirmed' ? 'underline' : ''}`}
-                disabled={!bookings.some(b => b.status === 'confirmed')}>
-                My Booked Events
-              </button>
-              <button 
                 onClick={() => setFilter('pending')} 
                 className={`btn ${filter === 'pending' ? 'underline' : ''}`}
                 disabled={!bookings.some(b => b.status === 'pending')}>
                 My Requests
+              </button>
+              <button 
+                onClick={() => setFilter('confirmed')} 
+                className={`btn ${filter === 'confirmed' ? 'underline' : ''}`}
+                disabled={!bookings.some(b => b.status === 'confirmed')}>
+                My Booked Events
               </button>
             </div>
           )}
@@ -129,7 +129,7 @@ const DJ: React.FC = () => {
               <div className="flex flex-col">
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{event.name}</h3>
                 <p className="text-sm text-gray-500">{event.location}</p>
-                <p className="text-sm text-gray-500 mb-2">{formatDate(event.start_datetime)} to {formatDate(event.end_datetime)}</p>
+                <p className="text-sm text-gray-500 mb-2">{formatDate(event.start_datetime)}</p>
                 <div className="flex items-center">
                   <span className={`font-semibold ${event.bookingStatus ? getStatusColor(event.bookingStatus) : "text-green-500"}`}>
                     {event.bookingStatus ? event.bookingStatus.charAt(0).toUpperCase() + event.bookingStatus.slice(1) : "Available"}

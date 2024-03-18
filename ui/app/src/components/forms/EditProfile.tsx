@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../AuthContext";
-import { useNotifier } from "../useNotifier";
+import { useAuth } from "../authentication/AuthContext";
+import { useNotifier } from "../helpers/useNotifier";
 import Navigation from "../Navigation";
-import { fetchUserProfile, updateUserProfile } from '../apiService';
+import { fetchUserProfile, updateUserProfile } from '../helpers/apiService';
 
 interface UserProfile {
   username: string;

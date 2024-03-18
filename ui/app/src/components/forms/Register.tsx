@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useNotifier } from "../useNotifier";
-import { registerUser } from "../apiService";
+import { useNotifier } from "../helpers/useNotifier";
+import { registerUser } from "../helpers/apiService";
 
 interface RegisterProps {
   onToggle: () => void;

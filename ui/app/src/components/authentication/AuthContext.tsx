@@ -5,7 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { loginUser, fetchSession, logoutUser } from './apiService';
+import { loginUser, fetchSession, logoutUser } from '../helpers/apiService';
 
 type UserRole = "event_manager" | "dj" | "administrator" | null;
 

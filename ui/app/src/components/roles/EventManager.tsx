@@ -5,9 +5,14 @@ import {
   ClipboardDocumentCheckIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import { useAuth } from "../AuthContext";
-import { useNotifier } from "../useNotifier";
-import { fetchUserEvents, deleteEvent } from '../apiService';
+import { useAuth } from "../authentication/AuthContext";
+import { useNotifier } from "../helpers/useNotifier";
+import { fetchUserEvents, deleteEvent } from '../helpers/apiService';
+
+const months = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
 
 interface Event {
   event_id: string;
@@ -20,6 +25,11 @@ interface Event {
   created_at?: string;
   updated_at?: string;
 }
+
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return `${date.getDate()}. ${months[date.getMonth()]}`;
+};
 
 const EventManager: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -80,6 +90,8 @@ const EventManager: React.FC = () => {
                 <h3 className="text-xl font-bold text-gray-900 mb-2">
                   {event.name}
                 </h3>
+                <p className="text-sm text-gray-500">{event.location}</p>
+                <p className="text-sm text-gray-500 mb-2">{formatDate(event.start_datetime)}</p>
                 <div className="flex items-center space-x-2">
                   <PencilSquareIcon
                     className="h-6 w-6 text-gray-400 cursor-pointer"

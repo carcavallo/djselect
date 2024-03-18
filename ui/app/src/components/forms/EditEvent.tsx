@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useNotifier } from "../useNotifier";
+import { useNotifier } from "../helpers/useNotifier";
 import Navigation from "../Navigation";
-import { fetchEventDetails, updateEvent } from '../apiService';
+import { fetchEventDetails, updateEvent } from '../helpers/apiService';
 
 const EditEvent: React.FC = () => {
   const { eventId } = useParams<{ eventId: string }>();

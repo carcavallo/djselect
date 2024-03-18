@@ -6,7 +6,7 @@ import {
   XMarkIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "./authentication/AuthContext";
 
 interface NavigationItem {
   name: string;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useAuth } from "../AuthContext";
-import { useNotifier } from "../useNotifier";
+import { useAuth } from "../authentication/AuthContext";
+import { useNotifier } from "../helpers/useNotifier";
 
 interface LoginProps {
   onToggle: () => void;

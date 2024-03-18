@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
-import Navigation from "./Navigation";
-import { useAuth } from "./AuthContext";
-import { useNotifier } from "./useNotifier";
-import { fetchEventDetail, sendBookingRequest } from './apiService'; 
+import Navigation from "../Navigation";
+import { useAuth } from "../authentication/AuthContext";
+import { useNotifier } from "../helpers/useNotifier";
+import { fetchEventDetail, sendBookingRequest } from '../helpers/apiService'; 
 
 const months = [
   "January",

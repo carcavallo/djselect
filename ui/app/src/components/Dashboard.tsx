@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "./authentication/AuthContext";
 import Navigation from "./Navigation";
 import EventManager from "./roles/EventManager";
 import DJ from "./roles/DJ";

@@ -61,7 +61,7 @@ class EventsController extends IOController
      */
     public function getEvents(): void
     {
-        $events = DataRepo::of(Event::class)->select();
+        $events = DataRepo::of(Event::class)->select(orderBy: ['start_datetime' => 'ASC']);
 
         if (empty($events)) {
             $this->sendResponse("error", "No events found", null, 404);
@@ -78,7 +78,8 @@ class EventsController extends IOController
     public function getUserEvents(string $userId): void
     {
         $events = DataRepo::of(Event::class)->select(
-            where: ["organizer_id" => ["=" => $userId]]
+            where: ["organizer_id" => ["=" => $userId]],
+            orderBy: ['start_datetime' => 'ASC']
         );
 
         $this->sendResponse("success", "Events retrieved successfully", $events);

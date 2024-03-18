@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useNotifier } from "../useNotifier";
-import { confirmResetPassword } from "../apiService";
+import { useNotifier } from "../helpers/useNotifier";
+import { confirmResetPassword } from "../helpers/apiService";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);

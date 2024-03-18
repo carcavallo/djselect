@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../authentication/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useNotifier } from "../useNotifier";
+import { useNotifier } from "../helpers/useNotifier";
 import Navigation from "../Navigation";
-import { createEvent } from '../apiService';
+import { createEvent } from '../helpers/apiService';
 
 const CreateEvent: React.FC = () => {
   const { user } = useAuth();

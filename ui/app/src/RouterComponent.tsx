@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Authentication from "./components/Authentication";
+import Authentication from "./components/authentication/Authentication";
 import Dashboard from "./components/Dashboard";
 import { ToastContainer } from "react-toastify";
 import SetNewPassword from "./components/forms/SetNewPassword";
 import "react-toastify/dist/ReactToastify.css";
-import { AuthProvider } from "./components/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./components/authentication/AuthContext";
+import ProtectedRoute from "./components/authentication/ProtectedRoute";
 import EditProfile from "./components/forms/EditProfile";
-import EventDetail from "./components/EventDetail";
+import EventDetail from "./components/forms/EventDetail";
 import CreateEvent from "./components/forms/CreateEvent";
 import EditEvent from "./components/forms/EditEvent";
 import EventBookings from "./components/forms/EventBookings";

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useNotifier } from '../useNotifier';
+import { useNotifier } from '../helpers/useNotifier';
 import { CheckIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import Navigation from '../Navigation';
-import { fetchBookingsForEvent, updateBookingStatus, fetchUserById } from '../apiService';
+import { fetchBookingsForEvent, updateBookingStatus, fetchUserById } from '../helpers/apiService';
 
 interface Booking {
   booking_id: string;
