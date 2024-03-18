@@ -83,6 +83,9 @@ const DJ: React.FC = () => {
     }
   };
 
+  const hasPending = bookings.some(b => b.status === 'pending');
+  const hasConfirmed = bookings.some(b => b.status === 'confirmed');
+
   const displayedEvents = events.map(event => {
     if (bookings && bookings.length > 0) {
       const booking = bookings.find(b => b.event_id === event.event_id);
@@ -98,25 +101,27 @@ const DJ: React.FC = () => {
           <h2 className="text-center text-3xl leading-9 font-extrabold text-white">
             My DJ Events
           </h2>
-          {events && events.length > 0 && bookings && bookings.length > 0 && (
+          {(hasPending || hasConfirmed) && (
             <div className="mt-8 flex text-white justify-center gap-4">
               <button 
                 onClick={() => setFilter('all')} 
                 className={`btn ${filter === 'all' ? 'underline' : ''}`}>
                 All Events
               </button>
-              <button 
-                onClick={() => setFilter('pending')} 
-                className={`btn ${filter === 'pending' ? 'underline' : ''}`}
-                disabled={!bookings.some(b => b.status === 'pending')}>
-                My Requests
-              </button>
-              <button 
-                onClick={() => setFilter('confirmed')} 
-                className={`btn ${filter === 'confirmed' ? 'underline' : ''}`}
-                disabled={!bookings.some(b => b.status === 'confirmed')}>
-                My Booked Events
-              </button>
+              {hasPending && (
+                <button 
+                  onClick={() => setFilter('pending')} 
+                  className={`btn ${filter === 'pending' ? 'underline' : ''}`}>
+                  My Requests
+                </button>
+              )}
+              {hasConfirmed && (
+                <button 
+                  onClick={() => setFilter('confirmed')} 
+                  className={`btn ${filter === 'confirmed' ? 'underline' : ''}`}>
+                  My Booked Events
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -124,24 +129,24 @@ const DJ: React.FC = () => {
           {displayedEvents.map((event) => (
             <div 
               key={event.event_id} 
-              className={`bg-white rounded-lg shadow p-4 ${event.bookingStatus ? "cursor-not-allowed" : "cursor-pointer"}`} 
+              className="bg-white rounded-lg shadow p-4 h-36 w-72 flex flex-col justify-between"
               onClick={() => event.bookingStatus ? null : navigate(`/events/${event.event_id}`)}>
-              <div className="flex flex-col">
+              <div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{event.name}</h3>
                 <p className="text-sm text-gray-500">{event.location}</p>
                 <p className="text-sm text-gray-500 mb-2">{formatDate(event.start_datetime)}</p>
-                <div className="flex items-center">
-                  <span className={`font-semibold ${event.bookingStatus ? getStatusColor(event.bookingStatus) : "text-green-500"}`}>
-                    {event.bookingStatus ? event.bookingStatus.charAt(0).toUpperCase() + event.bookingStatus.slice(1) : "Available"}
-                  </span>
-                  {event.bookingStatus === 'pending' && (
-                    <XMarkIcon
-                      onClick={(e) => {e.stopPropagation(); cancelBooking(event.event_id, e);}}
-                      className="h-6 w-6 text-red-500 cursor-pointer"
-                      aria-hidden="true"
-                    />
-                  )}
-                </div>
+              </div>
+              <div className="flex items-center">
+                <span className={`font-semibold ${event.bookingStatus ? getStatusColor(event.bookingStatus) : "text-green-500"}`}>
+                  {event.bookingStatus ? event.bookingStatus.charAt(0).toUpperCase() + event.bookingStatus.slice(1) : "Available"}
+                </span>
+                {event.bookingStatus === 'pending' && (
+                  <XMarkIcon
+                    onClick={(e) => {e.stopPropagation(); cancelBooking(event.event_id, e);}}
+                    className="h-6 w-6 text-red-500 cursor-pointer"
+                    aria-hidden="true"
+                  />
+                )}
               </div>
             </div>
           ))}

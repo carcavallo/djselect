@@ -127,7 +127,7 @@ class AuthController extends IOController
      */
     public function checkLogin(): void
     {
-        if (empty($_SESSION["user_id"])) {
+        if (empty($_SESSION['user']['user_id'])) {
             $this->logout(false);
             $this->sendResponse("error", "You are not logged in", 403);
         }

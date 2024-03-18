@@ -18,7 +18,7 @@ const EditUser: React.FC = () => {
     email: "",
     role: "",
     password: "",
-    user_id: userId || "", // Ensure user_id is included in userDetails
+    user_id: userId || "",
   });
   const navigate = useNavigate();
   const { notifySuccess, notifyError } = useNotifier();
@@ -28,7 +28,7 @@ const EditUser: React.FC = () => {
       if (!userId) return;
       try {
         const details = await fetchUserById(userId);
-        setUserDetails({ ...details, password: "" }); // Preserve the password as optional for update
+        setUserDetails({ ...details, password: "" });
       } catch (error) {
         notifyError("Failed to fetch user details");
       }
@@ -45,7 +45,7 @@ const EditUser: React.FC = () => {
     try {
       await updateUserProfile(userDetails.user_id, {
         ...userDetails,
-        password: userDetails.password?.trim() ? userDetails.password : undefined, // Exclude password if it's empty
+        password: userDetails.password?.trim() ? userDetails.password : undefined,
       });
       notifySuccess("User updated successfully.");
       navigate("/dashboard");

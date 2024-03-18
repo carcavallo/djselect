@@ -26,7 +26,6 @@ const EventBookings: React.FC = () => {
       setLoading(true);
       try {
         let bookingsData = await fetchBookingsForEvent(eventId);
-        // Ensure bookingsData is treated as an array even if it's undefined.
         bookingsData = bookingsData ?? [];
         setHasConfirmedBooking(bookingsData.some(booking => booking.status === 'confirmed'));
         const bookingsWithUsernames = await Promise.all(
@@ -35,7 +34,6 @@ const EventBookings: React.FC = () => {
               const userData = await fetchUserById(booking.dj_id);
               return { ...booking, djUsername: userData.username };
             } catch (error) {
-              console.error("Failed to fetch DJ username for booking", booking.booking_id);
               return { ...booking, djUsername: "Unknown DJ" };
             }
           })
@@ -98,7 +96,7 @@ const EventBookings: React.FC = () => {
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            DJ Username
+                            Username
                           </th>
                           <th
                             scope="col"
