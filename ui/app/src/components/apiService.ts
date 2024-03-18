@@ -4,8 +4,8 @@ interface EventDetails {
   organizer_id: string;
   name: string;
   location: string;
-  event_date: string;
-  event_time: string;
+  start_datetime: string;
+  end_datetime: string;
   description: string;
 }
 
@@ -20,8 +20,8 @@ interface EventUpdateDetails {
   organizer_id: string;
   name: string;
   location: string;
-  event_date: string;
-  event_time: string;
+  start_datetime: string;
+  end_datetime: string;
   description: string;
 }
 

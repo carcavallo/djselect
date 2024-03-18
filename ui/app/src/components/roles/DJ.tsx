@@ -15,8 +15,8 @@ interface Event {
   organizer_id: string;
   name: string;
   location: string;
-  event_date: string;
-  event_time: string;
+  start_datetime: string;
+  end_datetime: string;
   description: string;
   created_at: string;
   updated_at: string;
@@ -34,8 +34,6 @@ const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
   return `${date.getDate()}. ${months[date.getMonth()]}`;
 };
-
-const formatTime = (timeString: string): string => timeString.substring(0, 5);
 
 const getStatusColor = (status: 'confirmed' | 'pending' | 'cancelled'): string => {
   switch (status) {
@@ -131,7 +129,7 @@ const DJ: React.FC = () => {
               <div className="flex flex-col">
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{event.name}</h3>
                 <p className="text-sm text-gray-500">{event.location}</p>
-                <p className="text-sm text-gray-500 mb-2">{formatDate(event.event_date)} at {formatTime(event.event_time)}</p>
+                <p className="text-sm text-gray-500 mb-2">{formatDate(event.start_datetime)} to {formatDate(event.end_datetime)}</p>
                 <div className="flex items-center">
                   <span className={`font-semibold ${event.bookingStatus ? getStatusColor(event.bookingStatus) : "text-green-500"}`}>
                     {event.bookingStatus ? event.bookingStatus.charAt(0).toUpperCase() + event.bookingStatus.slice(1) : "Available"}

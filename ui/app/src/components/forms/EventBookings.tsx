@@ -26,16 +26,20 @@ const EventBookings: React.FC = () => {
       setLoading(true);
       try {
         let bookingsData = await fetchBookingsForEvent(eventId);
+        // Ensure bookingsData is treated as an array even if it's undefined.
+        bookingsData = bookingsData ?? [];
         setHasConfirmedBooking(bookingsData.some(booking => booking.status === 'confirmed'));
-        const bookingsWithUsernames = await Promise.all(bookingsData.map(async (booking) => {
-          try {
-            const userData = await fetchUserById(booking.dj_id);
-            return { ...booking, djUsername: userData.username };
-          } catch (error) {
-            console.error("Failed to fetch DJ username for booking", booking.booking_id);
-            return { ...booking, djUsername: "Unknown DJ" };
-          }
-        }));
+        const bookingsWithUsernames = await Promise.all(
+          bookingsData.map(async (booking) => {
+            try {
+              const userData = await fetchUserById(booking.dj_id);
+              return { ...booking, djUsername: userData.username };
+            } catch (error) {
+              console.error("Failed to fetch DJ username for booking", booking.booking_id);
+              return { ...booking, djUsername: "Unknown DJ" };
+            }
+          })
+        );
         setBookings(bookingsWithUsernames);
       } catch (error: any) {
         notifyError(error.message || "An error occurred while fetching bookings");
@@ -45,7 +49,7 @@ const EventBookings: React.FC = () => {
     };
   
     loadBookings();
-  }, [eventId]);
+  }, [eventId]);  
 
   const handleBack = () => {
     navigate(-1);
@@ -56,7 +60,7 @@ const EventBookings: React.FC = () => {
       await updateBookingStatus(bookingId, newStatus);
       notifySuccess(`Booking ${newStatus}`);
       setBookings(
-        bookings.map((booking) =>
+        bookings?.map((booking) =>
           booking.booking_id === bookingId
             ? { ...booking, status: newStatus }
             : booking
@@ -153,7 +157,7 @@ const EventBookings: React.FC = () => {
               </div>
             </div>
           ) : (
-            <p className="mt-5 text-center text-lg text-gray-500">No booking requests found for this event.</p>
+            <p className="mt-5 mb-6 text-center text-lg text-gray-500">No booking requests found for this event.</p>
           )
           }
       </div>

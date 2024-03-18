@@ -14,8 +14,8 @@ interface Event {
   organizer_id: string;
   name: string;
   location: string;
-  event_date: string;
-  event_time: string;
+  start_datetime: string;
+  end_datetime: string;
   description: string;
   created_at?: string;
   updated_at?: string;

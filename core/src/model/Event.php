@@ -23,9 +23,9 @@ class Event implements JsonSerializable {
     #[db_column]
     public string $location;
     #[db_column]
-    public string $event_date;
+    public string $start_datetime;
     #[db_column]
-    public string $event_time;
+    public string $end_datetime;
     #[db_column]
     public ?string $description;
     #[db_column]

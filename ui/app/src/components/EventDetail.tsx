@@ -21,24 +21,18 @@ const months = [
   "December",
 ];
 
-const formatDate = (dateString: string) => {
+const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
-  const day = date.getDate();
-  const month = months[date.getMonth()];
-  return `${day}. ${month}`;
-};
-
-const formatTime = (timeString: string) => {
-  return timeString.substring(0, 5);
-};
+  return `${date.getDate()}. ${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()} (${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')})`;
+};  
 
 interface Event {
   event_id: string;
   organizer_id: string;
   name: string;
   location: string;
-  event_date: string;
-  event_time: string;
+  start_datetime: string;
+  end_datetime: string;
   description: string;
   created_at: string;
   updated_at: string;
@@ -90,7 +84,7 @@ const EventDetail: React.FC = () => {
             {event.name}
           </h2>
           <p className="mt-4 max-w-2xl text-xl mx-auto">
-            {formatDate(event.event_date)} at {formatTime(event.event_time)}
+            {formatDate(event.start_datetime)} - {formatDate(event.end_datetime)}
           </p>
         </div>
         <p className="text-md text-center mb-4">Location: {event.location}</p>

@@ -13,10 +13,20 @@ const CreateEvent: React.FC = () => {
     organizer_id: user?.user_id || "",
     name: "",
     location: "",
-    event_date: "",
-    event_time: "",
+    start_datetime: "",
+    end_datetime: "",
     description: "",
   });
+
+  const getMinDateTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -30,6 +40,11 @@ const CreateEvent: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (new Date(eventDetails.end_datetime) <= new Date(eventDetails.start_datetime)) {
+      notifyError("The end date and time must be after the start date and time.");
+      return;
+    }
 
     try {
       await createEvent(eventDetails);
@@ -65,19 +80,21 @@ const CreateEvent: React.FC = () => {
             onChange={handleChange}
             />
             <input
-            name="event_date"
-            type="date"
+            name="start_datetime"
+            type="datetime-local"
             required
             className="appearance-none rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-            value={eventDetails.event_date}
+            min={getMinDateTime()}
+            value={eventDetails.start_datetime}
             onChange={handleChange}
             />
             <input
-            name="event_time"
-            type="time"
+            name="end_datetime"
+            type="datetime-local"
             required
             className="appearance-none rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-            value={eventDetails.event_time}
+            min={getMinDateTime()}
+            value={eventDetails.end_datetime}
             onChange={handleChange}
             />
             <textarea

@@ -13,8 +13,8 @@ const EditEvent: React.FC = () => {
     organizer_id: "",
     name: "",
     location: "",
-    event_date: "",
-    event_time: "",
+    start_datetime: "",
+    end_datetime: "",
     description: "",
   });
 
@@ -26,8 +26,8 @@ const EditEvent: React.FC = () => {
             organizer_id: data.organizer_id,
             name: data.name,
             location: data.location,
-            event_date: data.event_date,
-            event_time: data.event_time,
+            start_datetime: data.start_datetime,
+            end_datetime: data.end_datetime,
             description: data.description,
           });
           setDataFetched(true);
@@ -86,21 +86,21 @@ const EditEvent: React.FC = () => {
                 onChange={handleChange}
                 />
                 <input
-                name="event_date"
-                type="date"
+                name="start_datetime"
+                type="datetime-local"
                 required
                 className="appearance-none rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Event Date"
-                value={eventDetails.event_date}
+                value={eventDetails.start_datetime}
                 onChange={handleChange}
                 />
                 <input
-                name="event_time"
-                type="time"
+                name="end_datetime"
+                type="datetime-local"
                 required
                 className="appearance-none rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Event Time"
-                value={eventDetails.event_time}
+                value={eventDetails.end_datetime}
                 onChange={handleChange}
                 />
                 <textarea
