@@ -78,7 +78,6 @@ const DJ: React.FC = () => {
     try {
       await cancelBookingService(booking.booking_id);
       notifySuccess('Booking cancelled successfully');
-      // Refresh bookings to reflect the cancellation
       const updatedBookings = await fetchBookings(user?.user_id || "");
       setBookings(updatedBookings);
     } catch (error: any) {

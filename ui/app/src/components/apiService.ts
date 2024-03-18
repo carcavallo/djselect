@@ -296,6 +296,37 @@ export const fetchUserById = async (userId: string): Promise<UserProfile> => {
   }
 };
 
+export const fetchUsers = async (): Promise<UserProfile[]> => {
+  try {
+    const response = await fetch(`${BASE_URL}/users`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch users.");
+    }
+    const data = await response.json();
+    return data.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteUser = async (userId: string): Promise<void> => {
+  try {
+    const response = await fetch(`${BASE_URL}/users/${userId}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      throw new Error("Failed to delete user.");
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const updateUserProfile = async (userId: string, profileData: UserProfile): Promise<void> => {
   const response = await fetch(`${BASE_URL}/users/${userId}`, {

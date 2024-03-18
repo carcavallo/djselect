@@ -11,6 +11,7 @@ import EventDetail from "./components/EventDetail";
 import CreateEvent from "./components/forms/CreateEvent";
 import EditEvent from "./components/forms/EditEvent";
 import EventBookings from "./components/forms/EventBookings";
+import EditUser from "./components/forms/EditUser";
 
 function RouterComponent() {
   return (
@@ -27,6 +28,7 @@ function RouterComponent() {
                 <Route path="/create-event" element={<CreateEvent />} />
                 <Route path="/edit-event/:eventId" element={<EditEvent />} />
                 <Route path="/event-requests/:eventId" element={<EventBookings />} />
+                <Route path="/user/:userId" element={<EditUser />} />
               </Route>
             </Routes>
         </Router>
