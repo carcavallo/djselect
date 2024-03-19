@@ -1,11 +1,7 @@
 import { Fragment, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import {
-  Bars3Icon,
-  XMarkIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/outline";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "./authentication/AuthContext";
 
 interface NavigationItem {

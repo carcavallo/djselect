@@ -15,9 +15,6 @@ const PasswordResetRequest: React.FC = () => {
       notifySuccess(
         "If the email is registered, you will receive a password reset link."
       );
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 4000);
     } catch (error: any) {
       notifyError(
         error.message || "An error occurred during the password reset request"

@@ -6,21 +6,6 @@ import { useAuth } from "../authentication/AuthContext";
 import { useNotifier } from "../helpers/useNotifier";
 import { fetchEventDetail, sendBookingRequest } from "../helpers/apiService";
 
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
   return `${date.getDate()}. ${date.toLocaleString("default", {

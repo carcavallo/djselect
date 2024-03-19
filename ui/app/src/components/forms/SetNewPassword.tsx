@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useNotifier } from "../helpers/useNotifier";
 import { confirmResetPassword } from "../helpers/apiService";
 
@@ -11,7 +11,6 @@ const SetNewPassword: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const { notifyError, notifySuccess } = useNotifier();
-  const navigate = useNavigate();
   const query = useQuery();
   const token = query.get("token");
 
@@ -26,9 +25,6 @@ const SetNewPassword: React.FC = () => {
     try {
       await confirmResetPassword({ token: token!, password });
       notifySuccess("Password has been reset successfully.");
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
     } catch (error: any) {
       notifyError(
         error.message || "An error occurred during the password reset process"

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useNotifier } from "../helpers/useNotifier";
 import { registerUser } from "../helpers/apiService";
 
@@ -8,7 +7,6 @@ interface RegisterProps {
 }
 
 const Register: React.FC<RegisterProps> = ({ onToggle }) => {
-  const navigate = useNavigate();
   const { error, notifyError, notifySuccess } = useNotifier();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -21,9 +19,6 @@ const Register: React.FC<RegisterProps> = ({ onToggle }) => {
     try {
       await registerUser({ username, password, email, role });
       notifySuccess("Registered successfully");
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 2000);
     } catch (error: any) {
       notifyError(error.message || "An error occurred during registration");
     }
