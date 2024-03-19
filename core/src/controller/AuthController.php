@@ -105,11 +105,12 @@ class AuthController extends IOController
      */
     public function getSession()
     {
-        if (isset($_SESSION['user']['user_id']) && $_SESSION['expires'] > time()) {
+        $this->checkLogin();
+
+        if (isset($_SESSION['user']['user_id'])) {
             $this->sendResponse("success", "User Session retrieved successfully", removeArrayKeys($_SESSION, ['password']));
-        } else {
-            $this->sendResponse("error", "Session expired or not logged in", null, 401);
         }
+
     }   
     
     /**
@@ -119,7 +120,9 @@ class AuthController extends IOController
      */
     public function logout(bool $respond = true): void
     {
-        session_unset();
+        $_SESSION = [];
+        setcookie(session_name(), "", time() - 42000, "/");
+        session_destroy();
 
         if ($respond) {
             $this->sendResponse("success", "Successfully logged out");
@@ -127,16 +130,36 @@ class AuthController extends IOController
     }
 
     /**
+     * Checks if the session has expired.
+     * @return bool
+     */
+    private function isSessionExpired(): bool
+    {
+        return !isset($_SESSION['expires']) || $_SESSION['expires'] < time();
+    }
+
+    /**
+     * Refreshes the session for an active user.
+     */
+    private function refreshSession(): void
+    {
+        $_SESSION['expires'] = time() + $GLOBALS['life_time'];
+        session_regenerate_id(true);
+    }
+    /**
      * Checks whether the user is logged in and returns an error message if the user is not logged in.
      * If the user is not logged in correctly, the user is logged out correctly and completely.
      * @return void
      */
     public function checkLogin(): void
     {
-        if (empty($_SESSION['user']['user_id'])) {
+        if (!isset($_SESSION['user']) || $this->isSessionExpired()) {
             $this->logout(false);
-            $this->sendResponse("error", "You are not logged in", 403);
+            $this->sendResponse("error", "Session expired or not logged in", null, 401);
+            exit();
         }
+
+        $this->refreshSession();
     }
 
     /**

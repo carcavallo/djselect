@@ -181,7 +181,7 @@ export const cancelBooking = async (bookingId: string) => {
 
 export const fetchUserEvents = async (userId: string) => {
   try {
-    const response = await fetch(`${BASE_URL}/usevents/${userId}`, {
+    const response = await fetch(`${BASE_URL}/user-events/${userId}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -350,7 +350,7 @@ export const fetchBookingsForEvent = async (
   eventId: string
 ): Promise<Booking[]> => {
   try {
-    const response = await fetch(`${BASE_URL}/boevents/${eventId}`, {
+    const response = await fetch(`${BASE_URL}/event-bookings/${eventId}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

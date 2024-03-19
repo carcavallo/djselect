@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useNotifier } from "../helpers/useNotifier";
 import { requestPasswordReset } from "../helpers/apiService";
 
 const PasswordResetRequest: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const { notifyError, notifySuccess } = useNotifier();
+  const navigate = useNavigate();
 
   const handlePasswordResetRequest = async (
     e: React.FormEvent<HTMLFormElement>
@@ -15,6 +17,7 @@ const PasswordResetRequest: React.FC = () => {
       notifySuccess(
         "If the email is registered, you will receive a password reset link."
       );
+      navigate("/dashboard");
     } catch (error: any) {
       notifyError(
         error.message || "An error occurred during the password reset request"

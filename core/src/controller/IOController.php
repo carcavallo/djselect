@@ -64,7 +64,7 @@ class IOController
         }
 
         if ($error) {
-            $this->sendResponse("error", "Sie haben nicht alle Felder ausgefüllt", array("arguments" => $arguments), 400);
+            $this->sendResponse("error", "You have not filled in all fields", array("arguments" => $arguments), 400);
         }
     }
 

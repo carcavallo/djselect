@@ -24,7 +24,6 @@ const EditProfile: React.FC = () => {
       if (isAuthenticated) {
         try {
           const profile = await fetchUserProfile();
-          console.log(profile);
           setUserProfile({
             user_id: profile.user_id,
             username: profile.username,
@@ -58,8 +57,6 @@ const EditProfile: React.FC = () => {
       notifyError("No profile information to update.");
       return;
     }
-
-    console.log(userProfile);
 
     const profileToUpdate: UserProfile = {
       ...userProfile,

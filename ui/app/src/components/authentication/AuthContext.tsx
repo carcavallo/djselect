@@ -46,7 +46,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setIsAuthenticated(false);
       }
     } catch (error) {
-      console.error(error);
       setIsAuthenticated(false);
     }
   };
@@ -60,7 +59,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       await loginUser(username, password);
       await initializeAuth();
     } catch (error) {
-      console.error(error);
       throw error;
     }
   };

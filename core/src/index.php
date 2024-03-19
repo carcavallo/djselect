@@ -69,9 +69,18 @@ $router->setBasePath("/api");
 
 $router->set404("IOController@show404");
 
-$router->before("GET|POST|PUT|DELETE", "/users/.*", "AuthController@checkLogin");
-$router->before("GET|POST|PUT|DELETE", "/events/.*", "AuthController@checkLogin");
-$router->before("GET|POST|PUT|DELETE", "/bookings/.*", "AuthController@checkLogin");
+$router->before('GET|POST|PUT|DELETE', '/users/?', 'AuthController@checkLogin');
+$router->before('GET|POST|PUT|DELETE', '/users/.*', 'AuthController@checkLogin');
+
+$router->before('GET|POST|PUT|DELETE', '/events/?', 'AuthController@checkLogin');
+$router->before('GET|POST|PUT|DELETE', '/events/.*', 'AuthController@checkLogin');
+
+$router->before('GET|POST|PUT|DELETE', '/user-events/?', 'AuthController@checkLogin');
+
+$router->before('GET|POST|PUT|DELETE', '/bookings/?', 'AuthController@checkLogin');
+$router->before('GET|POST|PUT|DELETE', '/bookings/.*', 'AuthController@checkLogin');
+
+$router->before('GET|POST|PUT|DELETE', '/event-bookings/?', 'AuthController@checkLogin');
 
 $router->mount("/auth", function () use ($router) {
     $router->post("/login", "AuthController@login");
@@ -93,13 +102,11 @@ $router->mount('/events', function () use ($router) {
     $router->post('/', 'EventsController@createEvent');
     $router->get('/', 'EventsController@getEvents');
     $router->get('/{eventId}', 'EventsController@getEvent');
-    $router->get('/user/{userId}', 'EventsController@getUserEvents');
     $router->put('/{eventId}', 'EventsController@updateEvent');
     $router->delete('/{eventId}', 'EventsController@deleteEvent');
 });
 
-$router->mount('/usevents', function () use ($router) {
-    $router->get('/{userId}', 'EventsController@getUserEvents');});
+$router->get('/user-events/{userId}', 'EventsController@getUserEvents');
 
 $router->mount('/bookings', function () use ($router) {
     $router->post('/', 'BookingsController@createBooking');
@@ -108,8 +115,7 @@ $router->mount('/bookings', function () use ($router) {
     $router->delete('/{bookingId}', 'BookingsController@deleteBooking');
 });
 
-$router->mount('/boevents', function () use ($router) {
-    $router->get('/{eventId}', 'BookingsController@getBookingByEventId');
-});
+$router->get('/event-bookings/{eventId}', 'BookingsController@getBookingByEventId');
+
 
 $router->run();
