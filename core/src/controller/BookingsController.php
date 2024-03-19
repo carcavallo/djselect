@@ -5,8 +5,7 @@ namespace controller;
 use Exception;
 use lib\DataRepo\DataRepo;
 use trait\getter;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception as PHPMailerException;
+use util\SendGridMailer;
 use model\Booking;
 use model\Event;
 
@@ -14,35 +13,42 @@ class BookingsController extends IOController
 {
     use getter;
 
+    private $mailer;
+
+    public function __construct() {
+        $this->mailer = new SendGridMailer($_ENV['SENDGRID_API_KEY']);
+    }
+
     /**
      * Creates a new booking with the provided details.
      * Validates the necessary input fields before creating the booking.
      * @return void
      * @throws Exception
      */
-    public function createBooking(): void
-    {
+    public function createBooking(): void {
         $this->checkPostArguments(["event_id", "dj_id", "status"]);
-    
+
         $booking = Booking::fromArray([
             "event_id" => $_POST["event_id"],
             "dj_id" => $_POST["dj_id"],
             "status" => $_POST["status"],
         ]);
-    
+
         if (DataRepo::insert($booking)) {
             $event = DataRepo::of(Event::class)->select(
                 where: ["event_id" => ["=" => $_POST["event_id"]]]
             );
-    
-            if (!empty($event)) {
+
+            if (!empty($event) && isset($event[0])) {
                 $organizerId = $event[0]->organizer_id;
                 $organizer = $this->_getUser($organizerId);
                 if ($organizer) {
-                    $this->sendEmailNotification($organizer->email, $event[0]->name, $booking->booking_id);
+                    $subject = "New Booking Request";
+                    $content = "A new booking request has been made for your event '{$event[0]->name}'. Booking ID: {$booking->booking_id}. Please log in to your dashboard to view the details.";
+                    $this->mailer->sendEmailNotification($organizer->email, $subject, $content);
                 }
             }
-    
+
             $this->sendResponse("success", "Booking created successfully", ["booking_id" => $booking->booking_id]);
         } else {
             $this->sendResponse("error", "Failed to create booking", null, 500);
@@ -96,8 +102,7 @@ class BookingsController extends IOController
      * @return void
      * @throws Exception
      */
-    public function updateBooking(string $bookingId): void
-    {
+    public function updateBooking(string $bookingId): void {
         $booking = $this->_getBooking($bookingId);
     
         if (!$booking) {
@@ -123,11 +128,13 @@ class BookingsController extends IOController
     
                 $dj = $this->_getUser($otherBooking->dj_id);
                 if ($dj) {
-                    if ($otherBooking->booking_id === $bookingId) {
-                        $this->sendConfirmationEmailNotification($dj->email, $booking->event_id);
-                    } else {
-                        $this->sendCancellationEmailNotification($dj->email, $booking->event_id);
-                    }
+                    $subject = $otherBooking->booking_id === $bookingId ? 
+                               "Booking Confirmation" : 
+                               "Booking Cancellation";
+                    $content = $otherBooking->booking_id === $bookingId ? 
+                               "Your booking for the event with ID: {$booking->event_id} has been confirmed. Please check your dashboard for more details." : 
+                               "We regret to inform you that your booking for the event with ID: {$booking->event_id} has been cancelled. Please check your dashboard for more details.";
+                    $this->mailer->sendEmailNotification($dj->email, $subject, $content);
                 }
             }
             $this->sendResponse("success", "Booking confirmed and others cancelled", null, 200);
@@ -146,7 +153,9 @@ class BookingsController extends IOController
                 $organizerId = $event[0]->organizer_id;
                 $organizer = $this->_getUser($organizerId);
                 if ($organizer) {
-                    $this->sendWithdrawalEmailNotification($organizer->email, $event[0]->name, $bookingId);
+                    $subject = "Booking Withdrawal Notification";
+                    $content = "The booking request with ID: {$bookingId} for your event '{$event[0]->name}' has been withdrawn. Please log in to your dashboard to view the details.";
+                    $this->mailer->sendEmailNotification($organizer->email, $subject, $content);
                 }
             }
             $this->sendResponse("success", "Booking withdrawn successfully", null, 200);
@@ -154,7 +163,7 @@ class BookingsController extends IOController
         }
     
         $this->sendResponse("error", "Invalid booking status update", null, 400);
-    }
+    }    
     
     /**
      * Deletes a booking based on the provided booking ID.
@@ -173,111 +182,4 @@ class BookingsController extends IOController
             $this->sendResponse("error", "Failed to delete booking", null, 500);
         }
     }
-
-    protected function sendEmailNotification(string $email, string $eventName, string $bookingId)
-    {
-        $mail = new PHPMailer(true);
-        try {
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host = $_ENV['EMAIL_HOST'];
-            $mail->SMTPAuth = true;
-            $mail->Username = $_ENV['EMAIL_USERNAME'];
-            $mail->Password = $_ENV['EMAIL_PASSWORD'];
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = 587;
-            $mail->CharSet = 'UTF-8';
-
-            $mail->setFrom('alessiopirovino@gmail.com', 'DJSELECT');
-            $mail->addAddress($email);            
-
-            $mail->isHTML(true);
-            $mail->Subject = 'New Booking Request';
-            $mail->Body    = "A new booking request has been made for your event '{$eventName}'. Booking ID: {$bookingId}. Please log in to your dashboard to view the details.";
-
-            $mail->send();
-        } catch (PHPMailerException $e) {
-            error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
-        }
-    }
-
-    protected function sendWithdrawalEmailNotification(string $email, string $eventName, string $bookingId)
-    {
-        $mail = new PHPMailer(true);
-        try {
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host = $_ENV['EMAIL_HOST'];
-            $mail->SMTPAuth = true;
-            $mail->Username = $_ENV['EMAIL_USERNAME'];
-            $mail->Password = $_ENV['EMAIL_PASSWORD'];
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = 587;
-            $mail->CharSet = 'UTF-8';
-
-            $mail->setFrom('alessiopirovino@gmail.com', 'DJSELECT');
-            $mail->addAddress($email);            
-    
-            $mail->isHTML(true);
-            $mail->Subject = 'Booking Withdrawal Notification';
-            $mail->Body = "The booking request with ID: {$bookingId} for your event '{$eventName}' has been withdrawn. Please log in to your dashboard to view the details.";
-    
-            $mail->send();
-        } catch (PHPMailerException $e) {
-            error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
-        }
-    }
-
-    protected function sendConfirmationEmailNotification(string $email, string $eventId) {
-        $mail = new PHPMailer(true);
-        try {
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host = $_ENV['EMAIL_HOST'];
-            $mail->SMTPAuth = true;
-            $mail->Username = $_ENV['EMAIL_USERNAME'];
-            $mail->Password = $_ENV['EMAIL_PASSWORD'];
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = 587;
-            $mail->CharSet = 'UTF-8';
-    
-            $mail->setFrom('alessiopirovino@gmail.com', 'DJSELECT');
-            $mail->addAddress($email);
-    
-            $mail->isHTML(true);
-            $mail->Subject = 'Booking Confirmation Notification';
-            $mail->Body = "Your booking request for the event with ID: {$eventId} has been confirmed. Please check your dashboard for more details.";
-    
-            $mail->send();
-        } catch (PHPMailerException $e) {
-            error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
-        }
-    }
-    
-    protected function sendCancellationEmailNotification(string $email, string $eventId) {
-        $mail = new PHPMailer(true);
-        try {
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host = $_ENV['EMAIL_HOST'];
-            $mail->SMTPAuth = true;
-            $mail->Username = $_ENV['EMAIL_USERNAME'];
-            $mail->Password = $_ENV['EMAIL_PASSWORD'];
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = 587;
-            $mail->CharSet = 'UTF-8';
-    
-            $mail->setFrom('alessiopirovino@gmail.com', 'DJSELECT');
-            $mail->addAddress($email);
-    
-            $mail->isHTML(true);
-            $mail->Subject = 'Booking Cancellation Notification';
-            $mail->Body = "We regret to inform you that your booking request for the event with ID: {$eventId} has been cancelled. For more information, please check your dashboard.";
-    
-            $mail->send();
-        } catch (PHPMailerException $e) {
-            error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
-        }
-    }
-    
 }

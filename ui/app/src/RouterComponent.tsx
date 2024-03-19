@@ -20,9 +20,9 @@ function RouterComponent() {
         <Router>
           <Routes>
             <Route path="/" element={<Authentication />} />
+            <Route path="/reset" element={<SetNewPassword />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/reset" element={<SetNewPassword />} />
               <Route path="/profile" element={<EditProfile />} />
               <Route path="/events/:eventId" element={<EventDetail />} />
               <Route path="/create-event" element={<CreateEvent />} />

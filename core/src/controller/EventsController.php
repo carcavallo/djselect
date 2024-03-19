@@ -7,8 +7,7 @@ use lib\DataRepo\DataRepo;
 use model\Event;
 use model\Booking;
 use trait\getter;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception as MailerException;
+use util\SendGridMailer;
 use function util\removeArrayKeys;
 use function util\removeArrayValues;
 
@@ -16,6 +15,13 @@ class EventsController extends IOController
 {
     use getter;
     
+    private $mailer;
+
+    public function __construct()
+    {
+        $this->mailer = new SendGridMailer($_ENV['SENDGRID_API_KEY']);
+    }
+
     /**
      * Creates a new event with the provided details.
      * Validates the necessary input fields before creating the event.
@@ -114,8 +120,7 @@ class EventsController extends IOController
      * Deletes an event based on the provided event ID.
      * Notifies DJs via email if the event has confirmed bookings before deletion.
      */
-    public function deleteEvent(string $eventId): void
-    {
+    public function deleteEvent(string $eventId): void {
         $event = $this->_getEvent($eventId);
     
         if (!$event) {
@@ -130,7 +135,9 @@ class EventsController extends IOController
         foreach ($confirmedBookings as $booking) {
             $dj = $this->_getUser($booking->dj_id);
             if ($dj) {
-                $this->sendEmailNotification($dj->email, $event->name);
+                $subject = 'Event Cancellation Notification';
+                $content = "Dear DJ, the event '{$event->name}' you were booked for has been cancelled. We apologize for any inconvenience.";
+                $this->mailer->sendEmailNotification($dj->email, $subject, $content);
             }
         }
     
@@ -144,39 +151,9 @@ class EventsController extends IOController
         }
     
         if (DataRepo::delete($event)) {
-            $this->sendResponse("success", "Event deleted successfully and emails sent to confiremd dj's");
+            $this->sendResponse("success", "Event deleted successfully and emails sent to confirmed DJs");
         } else {
             $this->sendResponse("error", "Failed to delete event", null, 500);
-        }
-    }    
-
-    /**
-     * Sends an email notification to the DJ about the event cancellation.
-     */
-    protected function sendEmailNotification(string $email, string $eventName)
-    {
-        $mail = new PHPMailer(true);
-        try {
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host = $_ENV['EMAIL_HOST'];
-            $mail->SMTPAuth = true;
-            $mail->Username = $_ENV['EMAIL_USERNAME'];
-            $mail->Password = $_ENV['EMAIL_PASSWORD'];
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = 587;
-            $mail->CharSet = 'UTF-8';
-
-            $mail->setFrom('alessiopirovino@gmail.com', 'DJSELECT');
-            $mail->addAddress($email);
-
-            $mail->isHTML(true);
-            $mail->Subject = 'Event Cancellation Notification';
-            $mail->Body    = 'Dear DJ, the event "' . $eventName . '" has been cancelled.';
-
-            $mail->send();
-        } catch (MailerException $e) {
-            error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
         }
     }
 }

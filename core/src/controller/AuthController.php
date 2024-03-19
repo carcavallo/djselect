@@ -5,12 +5,18 @@ namespace controller;
 use Exception;
 use lib\DataRepo\DataRepo;
 use model\User;
-use PHPMailer\PHPMailer\PHPMailer;
 use function util\removeArrayKeys;
 use function util\removeArrayValues;
+use util\SendGridMailer;
 
 class AuthController extends IOController
 {
+    private $mailer;
+
+    public function __construct()
+    {
+        $this->mailer = new SendGridMailer($_ENV['SENDGRID_API_KEY']);
+    }
     /**
      * Checks the user's credentials to start a session.
      * If the credentials are valid, a session is started and a success message is returned.
@@ -140,7 +146,6 @@ class AuthController extends IOController
      * a reset link will be sent. This message is sent regardless of whether the email is in the database to prevent
      * information disclosure about registered emails.
      * @return void
-     * @throws Exception If there's an issue sending the email through PHPMailer.
      */
     public function requestPasswordReset(): void
     {
@@ -160,35 +165,22 @@ class AuthController extends IOController
             $user->reset_token_expires = $expires->format('Y-m-d H:i:s');
             DataRepo::update($user);
     
-            $mail = new PHPMailer(true);
-
+            $resetPasswordLink = "http://localhost:3000/reset?token=" . $token;
+    
+            $subject = 'Password Reset Request';
+            $content = "Please click on the following link to reset your password: <a href='{$resetPasswordLink}'>Reset Password</a>";
+    
             try {
-                $mail->SMTPDebug = 0;
-                $mail->isSMTP();
-                $mail->Host = $_ENV['EMAIL_HOST'];
-                $mail->SMTPAuth = true;
-                $mail->Username = $_ENV['EMAIL_USERNAME'];
-                $mail->Password = $_ENV['EMAIL_PASSWORD'];
-                $mail->SMTPSecure = 'tls';
-                $mail->Port = 587;
-                $mail->CharSet = 'UTF-8';
-    
-                $mail->setFrom('alessiopirovino@gmail.com', 'DJSELECT');
-                $mail->addAddress($email);
-    
-                $mail->isHTML(true);
-                $mail->Subject = 'Password Reset Request';
-                $mail->Body = 'Please click on the following link to reset your password: <a href="http://localhost:3000/reset?token=' . $token . '">Reset Password</a>';
-    
-                $mail->send();
+                $this->mailer->sendEmailNotification($email, $subject, $content);
                 $this->sendResponse("success", "If the email is registered, you will receive a password reset link.");
             } catch (Exception $e) {
-                $this->sendResponse("error", "Mailer Error: " . $mail->ErrorInfo, null, 500);
+                $this->sendResponse("error", "Failed to send reset email: " . $e->getMessage(), null, 500);
             }
         } else {
             $this->sendResponse("success", "If the email is registered, you will receive a password reset link.");
         }
     }
+    
     
     /**
      * Confirms the password reset request by checking the provided reset token. It updates the user's password
