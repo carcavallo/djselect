@@ -37,7 +37,7 @@ class AuthController extends IOController
         );
 
         if (empty($user) || !password_verify($_POST["password"], $user[0]->password)) {
-            $this->writeLog("Login failed for the user {username} - Login data", ["username" => $_POST["username"]], 401);
+            //$this->writeLog("Login failed for the user {username} - Login data", ["username" => $_POST["username"]], 401);
             $this->sendResponse("error", "Username or password incorrect", null, 401);
         } else {
             $user[0]->last_login = time();

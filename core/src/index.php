@@ -3,18 +3,10 @@
 error_reporting(E_ALL);
 
 global $life_time;
-global $delete_time;
-global $file_size;
 
-$life_time = 60 * 60 * 24 * 14;
+$life_time = 3600;
 $expire_time = time() + $life_time;
-$delete_time = 60 * 60 * 24;
 
-$file_size = 100000000;
-
-ini_set("memory_limit", "512M");
-ini_set("post_max_size", "256M");
-ini_set("upload_max_filesize", "256M");
 ini_set("session.gc_maxlifetime", (string)$life_time);
 ini_set("session.save_path", __DIR__ . "/sessions");
 
