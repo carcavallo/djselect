@@ -163,6 +163,21 @@ class AuthController extends IOController
     }
 
     /**
+     * Checks whether the logged-in user has the required roles to access a resource.
+     * @param array $requiredRoles The required roles.
+     * @return void
+     */
+    public function checkUserRole(array $requiredRoles): void
+    {
+        $this->checkLogin();
+        if (!in_array($_SESSION['user']['role'], $requiredRoles)) {
+            $this->sendResponse("error", "Unauthorized", null, 403);
+            exit;
+        }
+    }
+
+
+    /**
      * Initiates the process for a user to reset their password. It checks for the user's email in the database.
      * If the email exists, it generates a reset token and sends a password reset link to the user's email.
      * The reset token is valid for one hour. It sends a success message indicating that if the email is registered,

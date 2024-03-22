@@ -81,7 +81,7 @@ class BookingsController extends IOController
      * @return void
      * @throws Exception
      */
-    public function getBookingByEventId(string $eventId): void
+    public function getBookingsByEventId(string $eventId): void
     {
         $event = DataRepo::of(Booking::class)->select(
             where: ["event_id" => ["=" => $eventId]]
