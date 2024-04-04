@@ -61,7 +61,6 @@ $router->setBasePath("/api");
 
 $router->set404("IOController@show404");
 
-// Auth routes (accessible to everyone)
 $router->mount("/auth", function () use ($router) {
     $router->post("/login", "AuthController@login");
     $router->post("/register", "AuthController@register");
@@ -71,14 +70,6 @@ $router->mount("/auth", function () use ($router) {
     $router->post("/reset/confirm", "AuthController@confirmResetPassword");
 });
 
-// Apply access control for routes that require specific user roles
-$adminAccess = ['administrator'];
-$eventAndBookingAccess = ['event_manager'];
-
-// User management routes (only accessible to admins)
-$router->before('GET|POST|PUT|DELETE', '/users/?', function() use ($adminAccess) {
-    (new AuthController())->checkUserRole($adminAccess);
-});
 $router->mount('/users', function () use ($router) {
     $router->get('/', 'UsersController@getUsers');
     $router->get('/{userId}', 'UsersController@getUser');
@@ -86,10 +77,6 @@ $router->mount('/users', function () use ($router) {
     $router->delete('/{userId}', 'UsersController@deleteUser');
 });
 
-// Events and bookings routes (accessible to admins, event managers, and DJs)
-$router->before('GET|POST|PUT|DELETE', '/events/?', function() use ($eventAndBookingAccess) {
-    (new AuthController())->checkUserRole($eventAndBookingAccess);
-});
 $router->mount('/events', function () use ($router) {
     $router->post('/', 'EventsController@createEvent');
     $router->get('/', 'EventsController@getEvents');
@@ -100,9 +87,6 @@ $router->mount('/events', function () use ($router) {
 
 $router->get('/user-events/{userId}', 'EventsController@getUserEvents');
 
-$router->before('GET|POST|PUT|DELETE', '/bookings/?', function() use ($eventAndBookingAccess) {
-    (new AuthController())->checkUserRole($eventAndBookingAccess);
-});
 $router->mount('/bookings', function () use ($router) {
     $router->post('/', 'BookingsController@createBooking');
     $router->get('/{userId}', 'BookingsController@getBookings');
@@ -110,6 +94,6 @@ $router->mount('/bookings', function () use ($router) {
     $router->delete('/{bookingId}', 'BookingsController@deleteBooking');
 });
 
-$router->get('/event-bookings/{eventId}', 'BookingsController@getBookingByEventId');
+$router->get('/event-bookings/{eventId}', 'BookingsController@getBookingsByEventId');
 
 $router->run();

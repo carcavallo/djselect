@@ -1,8 +1,4 @@
 *.env
-logs/
-sessions/
-data/
-requests
 vendor/
 *.lock
 dist/
@@ -19,5 +15,3 @@ package-lock.json
 .history/
 .DS_Store
 Thumbs.db
-*.crt
-*.key
