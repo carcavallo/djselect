@@ -41,8 +41,13 @@ require_once __DIR__ . "/vendor/autoload.php";
 require_once __DIR__ . "/util/utils.php";
 
 use Bramus\Router\Router;
+use Prometheus\CollectorRegistry;
+use Prometheus\RenderTextFormat;
+use Prometheus\Storage\InMemory;
 use controller\IOController;
 use lib\DataRepo\DataRepo;
+
+$registry = new CollectorRegistry(new InMemory());
 
 set_exception_handler(function (Throwable $error) {
     (new IOController)->writeLog($error->getMessage(), 500);
@@ -59,7 +64,20 @@ $router = new Router();
 $router->setNamespace("controller");
 $router->setBasePath("/api");
 
-$router->set404("IOController@show404");
+$router->before('GET|POST|PUT|DELETE', '/.*', function () use ($registry) {
+    $counter = $registry->getOrRegisterCounter('api_requests', 'total', 'Number of API requests', ['method', 'endpoint']);
+    $counter->incBy(1, [$_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']]);
+});
+
+$router->get('/metrics', function () use ($registry) {
+    $renderer = new RenderTextFormat();
+
+    $gauge = $registry->getOrRegisterGauge('api_active_sessions', 'gauge', 'Number of active sessions');
+    $gauge->set(count($_SESSION));
+
+    header('Content-type: ' . RenderTextFormat::MIME_TYPE);
+    echo $renderer->render($registry->getMetricFamilySamples());
+});
 
 $router->mount("/auth", function () use ($router) {
     $router->post("/login", "AuthController@login");
